@@ -1,6 +1,6 @@
-using MedWarehousePlace.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using PL.Models;
 
 namespace MedWarehousePlace.Controllers
 {

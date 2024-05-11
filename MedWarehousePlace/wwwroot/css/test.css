@@ -1,0 +1,39 @@
+﻿.cell-checkbox {
+    display: none;
+}
+
+.cell-label {
+    display: block;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+
+    .cell-label::before {
+        content: '';
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: 1px solid #ccc;
+    }
+
+.cell-checkbox:checked + .cell-label::before {
+    background-color: #007bff; 
+}
+
+.cell-checkbox.is-rack {
+    display: none; 
+}
+
+.cell-label.is-rack {
+    background-color: #ccc; 
+    cursor: not-allowed; 
+}
+
+.cell-label.is-aisle {
+    background-color: #ffffc2;
+    cursor: not-allowed;
+}

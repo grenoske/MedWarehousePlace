@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Warehouse>
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col text-center">
+            <h2>Warehouses</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        @foreach (var warehouse in Model)
+        {
+            <div class="col-sm-6">
+                <div class="card position-relative mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">@warehouse.Name</h5>
+                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                        <a asp-controller="Warehouse" asp-action="CellMapEdit" asp-route-wareHouseId="@warehouse.Id" class="btn btn-primary">
+                            Select
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                        <a asp-controller="Warehouse" asp-action="Edit" asp-route-wareHouseId="@warehouse.Id" class="btn btn-primary position-absolute bottom-0 end-0 m-3">
+                            <i class="bi bi-gear"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="col-sm-6">
+            <div class="card position-relative mb-3">
+                <div class="card-body d-flex justify-content-center align-items-center" style="height: 100%">
+                    <a asp-controller="Warehouse" asp-action="Create" class="btn btn-outline-primary" style="font-size: 3rem;">
+                        <i class="bi bi-plus"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

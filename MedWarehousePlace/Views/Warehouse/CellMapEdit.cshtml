@@ -1,0 +1,68 @@
+﻿@model Warehouse
+
+<link rel="stylesheet" href="~/css/test.css" />
+
+<div class="card">
+    <div class="card-header">
+        Visual Editor
+    </div>
+    <div class="card-body">
+        <form method="post" asp-action="CellMapEdit">
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <tbody>
+                        <tr>
+                            <th>Packing Area</th>
+                            @for (int col = 0; col < Model.Width; col++)
+                            {
+                                <th>
+                                </th>
+                            }
+                            <th>Receiving Area</th>
+                        </tr>
+                        @for (int row = 0; row < Model.Length; row++)
+                        {
+                            <tr>
+                                <td>
+                                </td>
+                                @for (int col = 0; col < Model.Width; col++)
+                                {
+                                    int i = row * Model.Width + col;
+                                    <td>
+                                        @if (Model.Cells[i].IsAisle)
+                                        {
+                                            <label class="cell-label is-aisle" asp-for="@Model.Cells[i].IsSelected">@col ; @row</label>
+                                        }
+                                        else if (Model.Cells[i].IsRack)
+                                        {
+                                            <label class="cell-label is-rack" asp-for="@Model.Cells[i].IsSelected">@col ; @row</label>
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" class="cell-checkbox" asp-for="@Model.Cells[i].IsSelected" />
+                                            <label class="cell-label" asp-for="@Model.Cells[i].IsSelected">@col ; @row</label>
+                                            <input type="hidden" asp-for="@Model.Cells[i].Id" />
+                                        }
+                                    </td>
+                                }
+                                <input type="hidden" asp-for="@Model.Id" />
+                                <td>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="row justify-content-center mt-3">
+                <div class="col-6 col-md-3">
+                    <button type="submit" asp-action="CreateRack" class="btn btn-primary form-control">Create Rack</button>
+                </div>
+                <div class="col-6 col-md-3">
+                    <button type="submit" asp-action="CreateAisle" class="btn btn-primary form-control">Create Aisle</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+

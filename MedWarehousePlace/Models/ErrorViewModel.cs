@@ -1,4 +1,4 @@
-namespace MedWarehousePlace.Models
+namespace PL.Models
 {
     public class ErrorViewModel
     {
