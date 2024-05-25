@@ -1,4 +1,4 @@
-﻿@model Warehouse
+﻿@model VisualViewModel
 
 <link rel="stylesheet" href="~/css/test.css" />
 
@@ -7,46 +7,46 @@
         Visual Editor
     </div>
     <div class="card-body">
-        <form method="post" asp-action="CellMapEdit">
+        <form method="post" asp-action="Edit">
 
             <div class="table-responsive">
                 <table class="table table-bordered table-hover">
                     <tbody>
                         <tr>
                             <th>Packing Area</th>
-                            @for (int col = 0; col < Model.Width; col++)
+                            @for (int col = 0; col < Model.Warehouse.Width; col++)
                             {
                                 <th>
                                 </th>
                             }
                             <th>Receiving Area</th>
                         </tr>
-                        @for (int row = 0; row < Model.Length; row++)
+                        @for (int row = 0; row < Model.Warehouse.Length; row++)
                         {
                             <tr>
                                 <td>
                                 </td>
-                                @for (int col = 0; col < Model.Width; col++)
+                                @for (int col = 0; col < Model.Warehouse.Width; col++)
                                 {
-                                    int i = row * Model.Width + col;
+                                    int i = row * Model.Warehouse.Width + col;
                                     <td>
-                                        @if (Model.Cells[i].IsAisle)
+                                        @if (Model.Warehouse.Cells[i].IsAisle)
                                         {
-                                            <label class="cell-label is-aisle" asp-for="@Model.Cells[i].IsSelected">@col ; @row</label>
+                                            <label class="cell-label is-aisle" asp-for="@Model.Warehouse.Cells[i].IsSelected">@col ; @row</label>
                                         }
-                                        else if (Model.Cells[i].IsRack)
+                                        else if (Model.Warehouse.Cells[i].IsRack)
                                         {
-                                            <label class="cell-label is-rack" asp-for="@Model.Cells[i].IsSelected">@col ; @row</label>
+                                            <label class="cell-label is-rack" asp-for="@Model.Warehouse.Cells[i].IsSelected">@col ; @row</label>
                                         }
                                         else
                                         {
-                                            <input type="checkbox" class="cell-checkbox" asp-for="@Model.Cells[i].IsSelected" />
-                                            <label class="cell-label" asp-for="@Model.Cells[i].IsSelected">@col ; @row</label>
-                                            <input type="hidden" asp-for="@Model.Cells[i].Id" />
+                                            <input type="checkbox" class="cell-checkbox" asp-for="@Model.Warehouse.Cells[i].IsSelected" />
+                                            <label class="cell-label" asp-for="@Model.Warehouse.Cells[i].IsSelected">@col ; @row</label>
+                                            <input type="hidden" asp-for="@Model.Warehouse.Cells[i].Id" />
                                         }
                                     </td>
                                 }
-                                <input type="hidden" asp-for="@Model.Id" />
+                                <input type="hidden" asp-for="@Model.Warehouse.Id" />
                                 <td>
                                 </td>
                             </tr>
@@ -65,4 +65,3 @@
         </form>
     </div>
 </div>
-

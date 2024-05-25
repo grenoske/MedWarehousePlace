@@ -80,77 +80,10 @@ namespace PL.Controllers
             return View();
         }
 
-            public IActionResult CellMapEdit(int? wareHouseId = 1)
-        {
-            if(wareHouseId == null || wareHouseId == 0)
-            {
-                return NotFound();
-            }
-            Warehouse warehouse = GetWarehouse(wareHouseId);
-            return View(warehouse);
-        }
-
-        [HttpPost]
-        public IActionResult CreateRack(Warehouse wh)
-        {
-            System.Diagnostics.Debug.WriteLine("SaveRack");
-            if (wh.Cells == null)
-            {
-                System.Diagnostics.Debug.WriteLine("Cell null");
-            }
-            var occupiedCells = wh.Cells.Where(c => c.IsSelected).ToList();
-
-            foreach (var cell in occupiedCells)
-            {
-                cell.IsRack = true;
-                cell.IsSelected = false;
-            }
-
-            foreach (var cell in wh.Cells)
-            {
-                if (occupiedCells.Contains(cell))
-                {
-                    cell.IsRack = true;
-                    cell.IsSelected = false;
-                }
-            }
-            wh.Racks = new List<Rack> { new Rack { Cells = occupiedCells } };
-
-            return RedirectToAction("CellMapEdit", new { warehouseId = wh.Id });
-        }
-
-        [HttpPost]
-        public IActionResult CreateAisle(Warehouse wh)
-        {
-            System.Diagnostics.Debug.WriteLine("SaveRack");
-            if (wh.Cells == null)
-            {
-                System.Diagnostics.Debug.WriteLine("Cell null");
-            }
-
-            var occupiedCells = wh.Cells.Where(c => c.IsSelected).ToList();
-
-
-            wh.Aisles = new List<Aisle> { new Aisle { Id = 0, Number = 0, Cells = occupiedCells} };
-
-            return RedirectToAction("CellMapEdit", new { warehouseId = wh.Id });
-        }
-
         [HttpGet]
         public IActionResult ItemList()
         {
             return View(GetAllItem());
-        }
-
-        [HttpGet]
-        public IActionResult CellMap(int? wareHouseId = 1)
-        {
-            if (wareHouseId == null || wareHouseId == 0)
-            {
-                return NotFound();
-            }
-            Warehouse warehouse = GetWarehouse(wareHouseId);
-            return View(warehouse);
         }
 
         public IActionResult Dashboard()

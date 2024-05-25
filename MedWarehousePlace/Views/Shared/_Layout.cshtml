@@ -64,13 +64,16 @@
                             </a>
                             <ul class="collapse show nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
                                 <li class="w-100">
-                                    <a asp-controller="Warehouse" asp-action="ItemList" class="nav-link px-0 text-white"> Inventory </a>
+                                    <a asp-controller="Inventory" asp-action="Inventory" class="nav-link px-0 text-white"> Inventory </a>
                                 </li>
                                 <li>
                                     <a asp-controller="Inventory" asp-action="Receiving" class="nav-link px-0 text-white"> Receiving </a>
                                 </li>
                                 <li>
                                     <a asp-controller="Inventory" asp-action="Packing" class="nav-link px-0 text-white"> Packing </a>
+                                </li>
+                                <li>
+                                    <a asp-controller="Inventory" asp-action="WorkerItems" class="nav-link px-0 text-white"> InHand </a>
                                 </li>
                             </ul>
                         </li>
@@ -81,10 +84,10 @@
                             </a>
                             <ul class="collapse show nav flex-column ms-1" id="submenu4" data-bs-parent="#menu">
                                 <li class ="w-100">
-                                    <a asp-controller="Warehouse" asp-action="CellMap" class="nav-link px-0 text-white"> Show </a>
+                                    <a asp-controller="Visual" asp-action="Index" class="nav-link px-0 text-white"> Show </a>
                                 </li>
                                 <li>
-                                    <a asp-controller="Warehouse" asp-action="CellMapEdit" class="nav-link px-0 text-white"> Edit </a>
+                                    <a asp-controller="Visual" asp-action="Edit" class="nav-link px-0 text-white"> Edit </a>
                                 </li>
                             </ul>
                         </li>
@@ -95,16 +98,16 @@
                             </a>
                             <ul class="collapse show nav flex-column ms-1" id="submenu5" data-bs-parent="#menu">
                                 <li class="w-100">
-                                    <a asp-controller="Warehouse" asp-action="CellMap" class="nav-link px-0 text-white"> ProductList </a>
+                                    <a asp-controller="Item" asp-action="Index" class="nav-link px-0 text-white"> ProductList </a>
                                 </li>
                                 <li class="w-100">
-                                    <a asp-controller="Warehouse" asp-action="CellMap" class="nav-link px-0 text-white"> AddProduct </a>
+                                    <a asp-controller="Item" asp-action="Upsert" class="nav-link px-0 text-white"> AddProduct </a>
                                 </li>
                                 <li class="w-100">
-                                    <a asp-controller="Warehouse" asp-action="CellMap" class="nav-link px-0 text-white"> CategoryList </a>
+                                    <a asp-controller="Category" asp-action="Index" class="nav-link px-0 text-white"> CategoryList </a>
                                 </li>
                                 <li class="w-100">
-                                    <a asp-controller="Warehouse" asp-action="CellMap" class="nav-link px-0 text-white"> AddCategory </a>
+                                    <a asp-controller="Category" asp-action="Upsert" class="nav-link px-0 text-white"> AddCategory </a>
                                 </li>
                             </ul>
                         </li>

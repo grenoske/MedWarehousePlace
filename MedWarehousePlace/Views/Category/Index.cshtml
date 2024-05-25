@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ItemViewModel>
+﻿@model IEnumerable<CategoryViewModel>
 
 <div class="card text-center">
     <div class="card-header">
@@ -17,29 +17,24 @@
             <thead>
                 <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Company</th>
-                    <th scope="col">Cost</th>
-                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var cat in Model)
                 {
                     <tr>
-                        <td>@item.Name</td>
-                        <td>@item.Category.Name</td>
-                        <td>@item.Company</td>
-                        <td>@item.Cost</td>
+                        <td>@cat.Name</td>
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" asp-controller="Item" asp-action="Upsert" asp-route-itemId="@item.Id">Edit</a></li>
-                                    <li><form method="post" asp-action="Delete" asp-route-itemId="@item.Id">
+                                    <li><a class="dropdown-item" asp-controller="Category" asp-action="Upsert" asp-route-id="@cat.Id">Edit</a></li>
+                                    <li>
+                                        <form method="post" asp-action="Delete" asp-route-id="@cat.Id">
                                             <button class="dropdown-item" type="submit">Delete</button>
-                                        </form></li>
+                                        </form>
+                                    </li>
                                 </ul>
                             </div>
                         </td>

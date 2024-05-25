@@ -1,4 +1,4 @@
-﻿@model Warehouse
+﻿@model VisualViewModel
 
 <link rel="stylesheet" href="~/css/cell-color.css" />
 <div class="card">
@@ -11,34 +11,34 @@
                 <tbody>
                     <tr>
                         <th>Packing Area</th>
-                        @for (int col = 0; col < Model.Width; col++)
+                        @for (int col = 0; col < Model.Warehouse.Width; col++)
                         {
                             <th class="text-center">
                             </th>
                         }
                         <th>Receiving Area</th>
                     </tr>
-                    @for (int row = 0; row < Model.Length; row++)
+                    @for (int row = 0; row < Model.Warehouse.Length; row++)
                     {
                         <tr>
                             <td>
                             </td>
-                            @for (int col = 0; col < Model.Width; col++)
+                            @for (int col = 0; col < Model.Warehouse.Width; col++)
                             {
-                                int i = row * Model.Width + col;
-                                @if (Model.Cells[i].IsAisle)
+                                int i = row * Model.Warehouse.Width + col;
+                                @if (Model.Warehouse.Cells[i].IsAisle)
                                 {
-                                    <td class="aisle">@Model.Cells[i].LabeledText</td>
+                                    <td class="aisle">@Model.Warehouse.Cells[i].LabeledText</td>
                                 }
-                                else if (Model.Cells[i].IsRack)
+                                else if (Model.Warehouse.Cells[i].IsRack)
                                 {
-                                    if (Model.Cells[i].IsNotEmpty)
+                                    if (Model.Warehouse.Cells[i].IsNotEmpty)
                                     {
-                                        <td class="rack-filled">@Model.Cells[i].LabeledText</td>
+                                        <td class="rack-filled">@Model.Warehouse.Cells[i].LabeledText</td>
                                     }
                                     else
                                     {
-                                        <td class="rack-empty">@Model.Cells[i].LabeledText</td>
+                                        <td class="rack-empty">@Model.Warehouse.Cells[i].LabeledText</td>
                                     }
                                 }
                                 else
@@ -90,7 +90,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Items)
+                @foreach (var item in Model.Warehouse.Items)
                 {
                     <tr>
                         <td>@item.Container</td>
@@ -125,7 +125,4 @@
     <div class="card-footer text-muted">
     </div>
 </div>
-
-
-
 

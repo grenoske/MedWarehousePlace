@@ -1,0 +1,31 @@
+﻿@model InventoryListViewModel
+
+<h2>@Model.Title</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Expiry Date</th>
+            <th>Container</th>
+            <th>Location</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.InventoryItems)
+        {
+            <tr>
+                <td>@item.Item.Name</td>
+                <td>@item.Quantity</td>
+                <td>@item.ExpiryDate.ToShortDateString()</td>
+                <td>@item.Container</td>
+                <td>@item.Location</td>
+                <td>
+                    <a href="@Url.Action("PickUpItem", "Inventory", new { itemId = item.ItemId })" class="btn btn-primary">Pick Up</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a href="@Url.Action("AddItem", "Inventory", new { status = Model.Title })" class="btn btn-primary">Add @Model.Title Item</a>
