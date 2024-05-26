@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PL.Models;
+using PL.Models.Location;
 using System.ComponentModel;
 
 namespace PL.Controllers
@@ -87,7 +88,10 @@ namespace PL.Controllers
                 var model = new WorkerItemViewModel
                 {
                     Id = _workerItems.Count + 1,
-                    InventoryItem = item
+                    InventoryItem = item,
+                    Racks = GetRackSelectList(),
+                    Shelves = new List<SelectListItem>(), // Спочатку порожній список
+                    Bins = new List<SelectListItem>() // Спочатку порожній список
                 };
                 return View(model);
             }
@@ -105,7 +109,43 @@ namespace PL.Controllers
                        }
                        return View("PickUpItem", model);*/
             _workerItems.Add(model);
+            model.Racks = GetRackSelectList();
+            model.Shelves = new List<SelectListItem>(); // Перезавантажуємо список полиць
+            model.Bins = new List<SelectListItem>();
             return RedirectToAction("WorkerItems");
+        }
+
+        // Метод для отримання списку стелажів
+        private IEnumerable<SelectListItem> GetRackSelectList()
+        {
+            return _warehouse.Racks.Select(r => new SelectListItem
+            {
+                Value = r.Id.ToString(),
+                Text = $"Rack {r.Number}"
+            });
+        }
+
+        // Метод для отримання списку полиць на основі стелажа
+        public JsonResult GetShelves(int rackId)
+        {
+            var shelves = _warehouse.Racks.FirstOrDefault(r => r.Id == rackId)?.Shelves.Select(s => new SelectListItem
+            {
+                Value = s.Id.ToString(),
+                Text = $"Shelf {s.Number}"
+            });
+            return Json(shelves);
+        }
+
+        // Метод для отримання списку кошиків на основі полиці
+        public JsonResult GetBins(int shelfId)
+        {
+            var bins = _warehouse.Racks.SelectMany(r => r.Shelves)
+                .FirstOrDefault(s => s.Id == shelfId)?.Bins.Select(b => new SelectListItem
+                {
+                    Value = b.Id.ToString(),
+                    Text = $"Bin {b.Number}"
+                });
+            return Json(bins);
         }
 
         public IActionResult PlaceItem(int workerItemId)
@@ -127,5 +167,84 @@ namespace PL.Controllers
             };
             return View(model);
         }
+
+
+        private static Warehouse _warehouse = new Warehouse
+        {
+            Id = 1,
+            Name = "Main Warehouse",
+            Location = "123 Warehouse St",
+            Width = 100,
+            Length = 200,
+            Height = 30,
+            CellSize = 10,
+            Racks = new List<Rack>
+            {
+                new Rack
+                {
+                    Id = 1,
+                    Number = 1,
+                    WarehouseId = 1,
+                    AisleId = 1,
+                    Shelves = new List<Shelf>
+                    {
+                        new Shelf
+                        {
+                            Id = 1,
+                            Number = 1,
+                            RackId = 1,
+                            Bins = new List<Bin>
+                            {
+                                new Bin { Id = 1, Number = 1, ShelfId = 1 },
+                                new Bin { Id = 2, Number = 2, ShelfId = 1 }
+                            }
+                        },
+                        new Shelf
+                        {
+                            Id = 2,
+                            Number = 2,
+                            RackId = 1,
+                            Bins = new List<Bin>
+                            {
+                                new Bin { Id = 3, Number = 1, ShelfId = 2 },
+                                new Bin { Id = 4, Number = 2, ShelfId = 2 }
+                            }
+                        }
+                    }
+                },
+                new Rack
+                {
+                    Id = 2,
+                    Number = 2,
+                    WarehouseId = 1,
+                    AisleId = 1,
+                    Shelves = new List<Shelf>
+                    {
+                        new Shelf
+                        {
+                            Id = 3,
+                            Number = 1,
+                            RackId = 2,
+                            Bins = new List<Bin>
+                            {
+                                new Bin { Id = 5, Number = 1, ShelfId = 3 },
+                                new Bin { Id = 6, Number = 2, ShelfId = 3 }
+                            }
+                        },
+                        new Shelf
+                        {
+                            Id = 4,
+                            Number = 2,
+                            RackId = 2,
+                            Bins = new List<Bin>
+                            {
+                                new Bin { Id = 7, Number = 1, ShelfId = 4 },
+                                new Bin { Id = 8, Number = 2, ShelfId = 4 }
+                            }
+                        }
+                    }
+                }
+            }
+        };
     }
 }

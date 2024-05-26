@@ -18,8 +18,83 @@
         <input type="text" asp-for="InventoryItem.Location" class="form-control" readonly />
     </div>
     <div class="form-group">
-        <label asp-for="LocationTo">Location To</label>
-        <input type="text" asp-for="LocationTo" class="form-control" />
+        <label asp-for="LocationTo">Rack</label>
+        <select asp-for="LocationTo" class="form-control" id="rackSelect">
+            <option value="">Select Rack</option>
+            @foreach (var rack in Model.Racks)
+            {
+                <option value="@rack.Value">@rack.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="ShelfId">Shelf</label>
+        <select asp-for="ShelfId" class="form-control" id="shelfSelect" disabled>
+            <option value="">Select Shelf</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="BinId">Bin</label>
+        <select asp-for="BinId" class="form-control" id="binSelect" disabled>
+            <option value="">Select Bin</option>
+        </select>
     </div>
     <button type="submit" class="btn btn-primary">Confirm Pick Up</button>
 </form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#rackSelect').change(function () {
+                var rackId = $(this).val();
+                if (rackId) {
+                    $.ajax({
+                        url: '/Inventory/GetShelves',
+                        type: 'GET',
+                        data: { rackId: rackId },
+                        dataType: 'json',
+                        success: function (data) {
+                            var shelfSelect = $('#shelfSelect');
+                            shelfSelect.empty().prop('disabled', false);
+                            shelfSelect.append('<option value="">Select Shelf</option>');
+                            $.each(data, function (index, item) {
+                                shelfSelect.append('<option value="' + item.value + '">' + item.text + '</option>');
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                } else {
+                    $('#shelfSelect').empty().prop('disabled', true);
+                    $('#binSelect').empty().prop('disabled', true);
+                }
+            });
+
+            $('#shelfSelect').change(function () {
+                var shelfId = $(this).val();
+                if (shelfId) {
+                    $.ajax({
+                        url: '/Inventory/GetBins',
+                        type: 'GET',
+                        data: { shelfId: shelfId },
+                        dataType: 'json',
+                        success: function (data) {
+                            var binSelect = $('#binSelect');
+                            binSelect.empty().prop('disabled', false);
+                            binSelect.append('<option value="">Select Bin</option>');
+                            $.each(data, function (index, item) {
+                                binSelect.append('<option value="' + item.value + '">' + item.text + '</option>');
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                } else {
+                    $('#binSelect').empty().prop('disabled', true);
+                }
+            });
+        });
+    </script>
+}
