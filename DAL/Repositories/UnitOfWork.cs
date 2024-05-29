@@ -17,6 +17,12 @@ namespace DAL.Repositories
         public ICategoryRepository Categories { get; private set; }
         public IWarehouseRepository Warehouses { get; private set; }
 
+        // Location
+        public IRackRepository Racks { get; private set; }
+        public IAisleRepository Aisles { get; private set; }
+        public IShelfRepository Shelves { get; private set; }
+        public IBinRepository Bins { get; private set; }
+
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
@@ -24,6 +30,11 @@ namespace DAL.Repositories
             Items = new ItemRepository(_db);
             Categories = new CategoryRepository(_db);
             Warehouses = new WarehouseRepository(_db);
+
+            Racks = new RackRepository(_db);
+            Aisles = new AisleRepository(_db);
+            Shelves = new ShelfRepository(_db);
+            Bins = new BinRepository(_db);
         }
 
         public void Save()

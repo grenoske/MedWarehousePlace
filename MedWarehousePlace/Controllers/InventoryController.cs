@@ -169,7 +169,7 @@ namespace PL.Controllers
         }
 
 
-        private static Warehouse _warehouse = new Warehouse
+        private static WarehouseViewModel2 _warehouse = new WarehouseViewModel2
         {
             Id = 1,
             Name = "Main Warehouse",
@@ -177,7 +177,6 @@ namespace PL.Controllers
             Width = 100,
             Length = 200,
             Height = 30,
-            CellSize = 10,
             Racks = new List<Rack>
             {
                 new Rack

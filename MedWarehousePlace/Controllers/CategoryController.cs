@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BLL.DTO;
+using BLL.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PL.Models;
 
@@ -6,10 +8,19 @@ namespace PL.Controllers
 {
     public class CategoryController : Controller
     {
+        private readonly IInventoryService _inventoryService;
+
+        public CategoryController(IInventoryService inventoryService)
+        {
+            _inventoryService = inventoryService;
+        }
+
         public IActionResult Index(int page = 1)
         {
-            return View(GetCategories(page));
+            var categories = _inventoryService.GetCategories(page).Select(c => (CategoryViewModel)c);
+            return View(categories);
         }
+
         public IActionResult Upsert(int? id)
         {
             CategoryViewModel category = new CategoryViewModel();
@@ -21,39 +32,45 @@ namespace PL.Controllers
             else
             {
                 // update
-                category = GetCategory(id);
+                var categoryDto = _inventoryService.GetCategoryById(id.Value);
+                category = (CategoryViewModel)categoryDto;
                 return View(category);
             }
-
         }
+
         [HttpPost]
         public IActionResult Upsert(CategoryViewModel category)
         {
-            if (category.Id == 0)
+            if (ModelState.IsValid)
             {
-                AddCategory(category);
-            }
-            else
-            {
-                UpdateCategory(category);
-            }
+                var categoryDto = (CategoryDTO)category;
+                if (category.Id == 0)
+                {
+                    _inventoryService.CreateCategory(categoryDto);
+                }
+                else
+                {
+                    _inventoryService.UpdateCategory(categoryDto);
+                }
 
-            TempData["success"] = "Category created/updated successfully";
-            return RedirectToAction("Index");
+                TempData["success"] = "Category created/updated successfully";
+                return RedirectToAction("Index");
+            }
+            return View(category);
         }
 
         [HttpPost]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            var categoryToBeDeleted = GetCategory(id);
-            if (categoryToBeDeleted == null)
+            var categoryDto = _inventoryService.GetCategoryById(id);
+            if (categoryDto == null)
             {
                 TempData["ErrorMessage"] = "Error while deleting";
                 return BadRequest("category is null");
             }
             else
             {
-                RemoveCategory(categoryToBeDeleted);
+                _inventoryService.DeleteCategory(id);
                 TempData["SuccessMessage"] = "Delete Successful";
             }
 

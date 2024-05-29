@@ -1,3 +1,11 @@
+using BLL.Interfaces;
+using BLL.Services;
+using DAL.Interfaces;
+using DAL.Repositories;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using BLL.Infrastructure.MappingProfiles;
+
 namespace MedWarehousePlace
 {
     public class Program
@@ -8,6 +16,12 @@ namespace MedWarehousePlace
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<DAL.EF.ApplicationDbContext>(options => options.UseSqlServer(
+                builder.Configuration.GetConnectionString("connectionString")));
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddTransient<IWarehouseService, WarehouseService>();
+            builder.Services.AddTransient<IInventoryService, InventoryService>();
+            builder.Services.AddAutoMapper(typeof(WarehouseProfile).Assembly);
 
             var app = builder.Build();
 

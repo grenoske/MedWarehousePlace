@@ -1,4 +1,4 @@
-﻿@model Warehouse
+﻿@model WarehouseViewModel
 
 <link rel="stylesheet" href="~/css/test.css" />
 
@@ -17,6 +17,11 @@
                     <input asp-for="Name" class="form-control border-0 shadow" />
                     <label asp-for="Name" class="ms-2"></label>
                     <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="Location" class="form-control border-0 shadow" />
+                    <label asp-for="Location" class="ms-2"></label>
+                    <span asp-validation-for="Location" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
                     <input asp-for="Width" class="form-control border-0 shadow" />
@@ -38,67 +43,7 @@
                 <button type="submit" class="btn btn-primary form-control">CreateWarehouse</button>
             </div>
         </form>
-        <a asp-controller="LocationWarehouseController" asp-action="Index" class="btn btn-primary">
-            Back to Menu
-        </a>
-
-            @* @if (Model != null && Model.Width > 0 && Model.Length > 0 && Model.Cells != null && Model.Cells.Any())
-            {
-            <form id="myForm" method="post" action="">
-
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <tbody>
-                            <tr>
-                                <th>Packing Area</th>
-                                @for (int col = 0; col < Model.Width; col++)
-                                {
-                                    <th>
-                                    </th>
-                                }
-                                <th>Receiving Area</th>
-                            </tr>
-                            @for (int row = 0; row < Model.Length; row++)
-                            {
-                                <tr>
-                                    <td>
-                                    </td>
-                                    @for (int col = 0; col < Model.Width; col++)
-                                    {
-                                        int i = row * Model.Width + col;
-                                        <td>
-                                            @{
-                                                bool isRack = Model.Cells[i].IsRack;
-                                                string disabledAttribute = isRack ? "disabled" : "";
-                                            }
-                                            <input type="checkbox" class="cell-checkbox @(isRack ? "is-rack" : "")" asp-for="@Model.Cells[i].IsSelected" />
-                                            <label class="cell-label @(isRack ? "is-rack" : "")" asp-for="@Model.Cells[i].IsSelected">@col ; @row</label>
-                                            <input type="hidden" asp-for="@Model.Cells[i].Id" />
-                                            @if (isRack)
-                                            {
-                                                <script>document.querySelector(".cell-checkbox[@(i)]").disabled = true;</script>
-                                            }
-                                        </td>
-                                    }
-                                    <td>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-6 col-md-3">
-                    <button type="button" class="btn btn-primary form-control" onclick="submitForm('CreateRack')">CreateRack</button>
-                </div>
-                <div class="col-6 col-md-3">
-                    <button type="button" class="btn btn-primary form-control" onclick="submitForm('CreateAisle')">CreateAisle</button>
-                </div>
-            </form>
-            } *@
-            
-        
 
     </div>
 </div>
 
-<script src="~/js/multiplysubmit.js"></script>

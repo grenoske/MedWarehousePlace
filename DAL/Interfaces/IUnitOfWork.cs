@@ -13,6 +13,12 @@ namespace DAL.Interfaces
         IItemRepository Items { get; }
         ICategoryRepository Categories { get; }
         IWarehouseRepository Warehouses { get; }
+
+        // Location
+        IRackRepository Racks { get; }
+        IAisleRepository Aisles { get; }
+        IShelfRepository Shelves { get; }
+        IBinRepository Bins { get; }
         void Save();
     }
 }

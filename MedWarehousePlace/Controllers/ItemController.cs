@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using BLL.DTO;
+using BLL.Interfaces;
+using DAL.Entities;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PL.Models;
@@ -7,20 +10,31 @@ namespace PL.Controllers
 {
     public class ItemController : Controller
     {
+        private readonly IInventoryService _inventoryService;
+
+        public ItemController(IInventoryService inventoryService)
+        {
+            _inventoryService = inventoryService;
+        }
+
         public IActionResult Index(int page = 1)
         {
-            return View(GetItems(page));
+            var itemsDTO = _inventoryService.GetItems(page);
+            var itemsView = itemsDTO.Select(wh => (ItemViewModel)wh);
+            return View(itemsView);
         }
+
         public IActionResult Upsert(int? itemId)
         {
-            ItemViewModel item = new()
+            var item = new ItemViewModel
             {
-                CategoryList = GetCategories().Select(u => new SelectListItem
+                CategoryList = _inventoryService.GetCategories().Select(u => new SelectListItem
                 {
                     Text = u.Name,
                     Value = u.Id.ToString()
                 }),
             };
+
             if (itemId == null || itemId == 0)
             {
                 // create
@@ -29,23 +43,24 @@ namespace PL.Controllers
             else
             {
                 // update
-                var cat = item.CategoryList;
-                item = GetItem(itemId);
-                item.CategoryList = cat;
-                return View(item);
+                var itemDto = _inventoryService.GetItemById(itemId.Value);
+                var itemView = (ItemViewModel)itemDto;
+                itemView.CategoryList = item.CategoryList;
+                return View(itemView);
             }
-
         }
+
         [HttpPost]
         public IActionResult Upsert(ItemViewModel item)
         {
+            var itemDto = (ItemDTO)item;
             if (item.Id == 0)
             {
-                AddItem(item);
+                _inventoryService.CreateItem(itemDto);
             }
             else
             {
-                UpdateItem(item);
+                _inventoryService.UpdateItem(itemDto);
             }
 
             TempData["success"] = "Product created/updated successfully";
@@ -55,18 +70,14 @@ namespace PL.Controllers
         [HttpPost]
         public IActionResult Delete(int? itemId)
         {
-            var productToBeDeleted = GetItem(itemId);
-            if (productToBeDeleted == null)
+            if (itemId == null || itemId == 0)
             {
                 TempData["ErrorMessage"] = "Error while deleting";
                 return BadRequest("product is null");
             }
-            else
-            {
-                RemoveItem(productToBeDeleted);
-                TempData["SuccessMessage"] = "Delete Successful";
-            }
 
+            _inventoryService.DeleteItem(itemId.Value);
+            TempData["SuccessMessage"] = "Delete Successful";
             return RedirectToAction("Index");
         }
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.Features;
+﻿using BLL.DTO;
+using BLL.Interfaces;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using PL.Models;
 using PL.Models.Location;
@@ -8,10 +10,17 @@ namespace PL.Controllers
 {
     public class WarehouseController : Controller
     {
+        private readonly IWarehouseService _warehouseService;
+
+        public WarehouseController(IWarehouseService warehouseService)
+        {
+            _warehouseService = warehouseService;
+        }
         public IActionResult Index()
         {
-            
-            return View(GetAllWarehouse());
+            IEnumerable<WarehouseDTO> warehouses = _warehouseService.GetAllWarehouses();
+            var warehousesView = warehouses.Select(wh => (WarehouseViewModel)wh);
+            return View(warehousesView);
         }
         public IActionResult Create()
         {
@@ -19,36 +28,22 @@ namespace PL.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Warehouse wh)
+        public IActionResult Create(WarehouseViewModel wh)
         {
-            if (wh == null)
+            if (ModelState.IsValid)
             {
-                System.Diagnostics.Debug.WriteLine("wh null");
-            }
-            if (wh.Cells == null)
-            {
-                System.Diagnostics.Debug.WriteLine("Cell null");
-                var cells = new List<Cell>();
-
-                int totalCells = wh.Width * wh.Length;
-
-                for (int i = 0; i < totalCells; i++)
+                try
                 {
-                    cells.Add(new Cell { Id = i + 1 });
+                    _warehouseService.CreateWarehouse(new WarehouseDTO { Name = wh.Name, Width = wh.Width, Length = wh.Length, Height = wh.Height, Location = wh.Location });
                 }
-                wh.Cells = cells;
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine("Cell not null");
-                var occupiedCells = wh.Cells.Where(c => c.IsSelected).ToList();
-                foreach (var cell in wh.Cells)
+                catch (ValidationException ex)
                 {
-                    if (cell.IsSelected)
-                        System.Diagnostics.Debug.WriteLine(cell.Id);
+                    ViewBag.Message = (ex.Message);
+                    return View(wh);
                 }
-            }
+                return RedirectToAction(nameof(Index));
 
+            }
             return View(wh);
         }
 
@@ -59,7 +54,7 @@ namespace PL.Controllers
                 return NotFound();
             }
 
-            Warehouse? wh = GetWarehouse(wareHouseId);
+            WarehouseViewModel2? wh = GetWarehouse(wareHouseId);
 
             if (wh == null)
             {
@@ -69,7 +64,7 @@ namespace PL.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Warehouse obj)
+        public IActionResult Edit(WarehouseViewModel2 obj)
         {
             if (ModelState.IsValid)
             {
@@ -78,12 +73,6 @@ namespace PL.Controllers
                 return RedirectToAction("Index");
             }
             return View();
-        }
-
-        [HttpGet]
-        public IActionResult ItemList()
-        {
-            return View(GetAllItem());
         }
 
         public IActionResult Dashboard()
@@ -104,28 +93,28 @@ namespace PL.Controllers
 
 
         // TEMP BLL
-        public IEnumerable<Cell> GetCellsMap(int? WarehouseId)
+        public IEnumerable<CellViewModel> GetCellsMap(int? WarehouseId)
         {
             int length = 5;
             int width = 5;
-            List <Cell> cells = new List <Cell>();
+            List <CellViewModel> cells = new List <CellViewModel>();
             for (int i = 0; i < length*width; i++)
             {
-                cells.Add(new Cell { Id = i + 1});
+                cells.Add(new CellViewModel { Id = i + 1});
             }
             return cells;
         }
 
-        public Warehouse GetWarehouse(int? id)
+        public WarehouseViewModel2 GetWarehouse(int? id)
         {
             int length = 5;
             int width = 5;
             int height = 5;
-            List<Cell> cells = new List<Cell>();
+            List<CellViewModel> cells = new List<CellViewModel>();
             
             for (int i = 0; i < length * width; i++)
             {
-                cells.Add(new Cell { Id = i + 1 });
+                cells.Add(new CellViewModel { Id = i + 1 });
             }
 
             List<Aisle> aisles = new List<Aisle>()
@@ -152,41 +141,41 @@ namespace PL.Controllers
             cells[1].LabeledText = " A1 ";
             cells[6].IsAisle = true;
             cells[11].IsAisle = true;
-            List<Item> items =
+            /*List<Item> items =
             [
                 new Item { Id = 1, Container="Europallet", Product="Antibiotics", Location="01-02-01-10", Quantity=122, ExpiryDate = new DateTime(2024, 12, 31)},
                 new Item { Id = 1, Container="Europallet", Product="Antibiotics", Location="01-02-01-11", Quantity=123, ExpiryDate = new DateTime(2024, 05, 06)},
                 new Item { Id = 1, Container="Europallet", Product="Antibiotics", Location="01-02-01-12", Quantity=144, ExpiryDate = new DateTime(2024, 01, 06)}
-            ];
-            return new Warehouse { Id = 1, Name = "Warehouse 1", Location = "St. Ivana Franka 22a", Width = width, Height = height, Length = length, Cells=cells, Racks=racks, Aisles=aisles, Items = items };
+            ];*/
+            return new WarehouseViewModel2 { Id = 1, Name = "Warehouse 1", Location = "St. Ivana Franka 22a", Width = width, Height = height, Length = length, Cells=cells, Racks=racks, Aisles=aisles };
 
         }
 
-        public void UpdateWarehouse(Warehouse wh)
+        public void UpdateWarehouse(WarehouseViewModel2 wh)
         {
             
         }
 
-        public IEnumerable<Warehouse> GetAllWarehouse()
+        public IEnumerable<WarehouseViewModel2> GetAllWarehouse()
         {
             int length = 5;
             int width = 5;
             int height = 5;
-            List<Cell> cells = new List<Cell>();
+            List<CellViewModel> cells = new List<CellViewModel>();
             for (int i = 0; i < length * width; i++)
             {
-                cells.Add(new Cell { Id = i + 1});
+                cells.Add(new CellViewModel { Id = i + 1});
             }
-            List<Warehouse> warehouses =
+            List<WarehouseViewModel2> warehouses =
             [
-                new Warehouse { Id = 1, Name="Warehouse 1", Location = "St. Ivana Franka 22a", Width = width, Height = height, Length = length, Cells = cells },
-                new Warehouse { Id = 2, Name="Warehouse 2", Location = "St. Khreshchatyk 1b", Width = width, Height = height, Length = length, Cells = cells }
+                new WarehouseViewModel2 { Id = 1, Name="Warehouse 1", Location = "St. Ivana Franka 22a", Width = width, Height = height, Length = length, Cells = cells },
+                new WarehouseViewModel2 { Id = 2, Name="Warehouse 2", Location = "St. Khreshchatyk 1b", Width = width, Height = height, Length = length, Cells = cells }
             ];
             return warehouses;
 
         }
 
-        public IEnumerable<Item> GetAllItem()
+/*        public IEnumerable<Item> GetAllItem()
         {
             List<Item> items =
             [
@@ -195,6 +184,6 @@ namespace PL.Controllers
                 new Item { Id = 1, Container="Europallet", Product="Antibiotics", Location="01-02-01-12", Quantity=144, ExpiryDate = new DateTime(2024, 01, 06)}
             ];
             return items;
-        }
+        }*/
     }
 }

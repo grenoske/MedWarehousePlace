@@ -4,16 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Entities
+namespace BLL.DTO
 {
-    public class Cell
+    public class CellDTO
     {
         public int Id { get; set; }
-        public int Number { get; set; }
-/*        public string LabeledText { get; set; }*/
-        public bool IsSelected { get; set; }
-        public bool IsAisle { get; set; }
         public bool IsRack { get; set; }
+        public bool IsAisle { get; set; }
         public bool IsNotEmpty { get; set; }
+        public string LabeledText { get; set; }
     }
 }

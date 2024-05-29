@@ -17,6 +17,10 @@ namespace DAL.EF
         public DbSet<Shelf> Shelves { get; set; }
         public DbSet<Bin> Bins { get; set; }
 
+        public ApplicationDbContext()
+        {
+        }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
             // Database configuration code
@@ -33,47 +37,56 @@ namespace DAL.EF
             modelBuilder.Entity<InventoryItem>()
                 .HasOne(ii => ii.Item)
                 .WithMany()
-                .HasForeignKey(ii => ii.ItemId);
+                .HasForeignKey(ii => ii.ItemId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Item>()
                 .HasOne(i => i.Category)
-                .WithMany()
-                .HasForeignKey(i => i.CategoryId);
+                .WithMany(c => c.Items)
+                .HasForeignKey(i => i.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Aisle>()
                 .HasOne(a => a.Warehouse)
                 .WithMany(w => w.Aisles)
-                .HasForeignKey(a => a.WarehouseId);
+                .HasForeignKey(a => a.WarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Rack>()
                 .HasOne(r => r.Warehouse)
                 .WithMany(w => w.Racks)
-                .HasForeignKey(r => r.WarehouseId);
+                .HasForeignKey(r => r.WarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Rack>()
                 .HasOne(r => r.Aisle)
                 .WithMany(a => a.Racks)
-                .HasForeignKey(r => r.AisleId);
+                .HasForeignKey(r => r.AisleId)
+                .OnDelete(DeleteBehavior.SetNull);
 
-/*            modelBuilder.Entity<Cell>()
-                .HasOne(c => c.Aisle)
-                .WithMany(a => a.Cells)
-                .HasForeignKey(c => c.AisleId);
+            /*            modelBuilder.Entity<Cell>()
+                            .HasOne(c => c.Aisle)
+                            .WithMany(a => a.Cells)
+                            .HasForeignKey(c => c.AisleId)
+                            .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Cell>()
-                .HasOne(c => c.Rack)
-                .WithMany(r => r.Cells)
-                .HasForeignKey(c => c.RackId);*/
+                        modelBuilder.Entity<Cell>()
+                            .HasOne(c => c.Rack)
+                            .WithMany(r => r.Cells)
+                            .HasForeignKey(c => c.RackId)
+                            .OnDelete(DeleteBehavior.Restrict);*/
 
             modelBuilder.Entity<Shelf>()
                 .HasOne(s => s.Rack)
                 .WithMany(r => r.Shelves)
-                .HasForeignKey(s => s.RackId);
+                .HasForeignKey(s => s.RackId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Bin>()
                 .HasOne(b => b.Shelf)
                 .WithMany(s => s.Bins)
-                .HasForeignKey(b => b.ShelfId);
+                .HasForeignKey(b => b.ShelfId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Add more configurations if necessary
         }

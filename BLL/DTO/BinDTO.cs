@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Entities
+namespace BLL.DTO
 {
-    public class Category
+    public class BinDTO
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public ICollection<Item> Items { get; set; }
+        public int Number { get; set; }
+        public int ShelfId { get; set; }
     }
 }

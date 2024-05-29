@@ -9,6 +9,8 @@
     <div class="card-body">
         <form method="post" asp-action="Edit">
 
+            <label>Cells count: @Model.Warehouse.Cells.Count</label>
+
             <div class="table-responsive">
                 <table class="table table-bordered table-hover">
                     <tbody>
@@ -32,18 +34,19 @@
                                     <td>
                                         @if (Model.Warehouse.Cells[i].IsAisle)
                                         {
-                                            <label class="cell-label is-aisle" asp-for="@Model.Warehouse.Cells[i].IsSelected">@col ; @row</label>
+                                            <label class="cell-label is-aisle">@col ; @row</label>
                                         }
                                         else if (Model.Warehouse.Cells[i].IsRack)
                                         {
-                                            <label class="cell-label is-rack" asp-for="@Model.Warehouse.Cells[i].IsSelected">@col ; @row</label>
+                                            <label class="cell-label is-rack">@col ; @row</label>
                                         }
                                         else
                                         {
                                             <input type="checkbox" class="cell-checkbox" asp-for="@Model.Warehouse.Cells[i].IsSelected" />
                                             <label class="cell-label" asp-for="@Model.Warehouse.Cells[i].IsSelected">@col ; @row</label>
-                                            <input type="hidden" asp-for="@Model.Warehouse.Cells[i].Id" />
+                                            
                                         }
+                                        <input type="hidden" asp-for="@Model.Warehouse.Cells[i].Id" />
                                     </td>
                                 }
                                 <input type="hidden" asp-for="@Model.Warehouse.Id" />
@@ -53,6 +56,11 @@
                         }
                     </tbody>
                 </table>
+            </div>
+            <div class="form-floating py-2 col-12">
+                <input asp-for="Number" class="form-control border-0 shadow" />
+                <label asp-for="Number" class="ms-2"></label>
+                <span asp-validation-for="Number" class="text-danger"></span>
             </div>
             <div class="row justify-content-center mt-3">
                 <div class="col-6 col-md-3">

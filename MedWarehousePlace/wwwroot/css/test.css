@@ -29,11 +29,11 @@
 }
 
 .cell-label.is-rack {
-    background-color: #ccc; 
+    background-color: #f00; 
     cursor: not-allowed; 
 }
 
 .cell-label.is-aisle {
-    background-color: #ffffc2;
+    background-color: #4cff00;
     cursor: not-allowed;
 }

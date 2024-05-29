@@ -2,6 +2,7 @@
 {
     public class VisualViewModel
     {
-        public Warehouse Warehouse { get; set; }
+        public WarehouseViewModel2 Warehouse { get; set; }
+        public int Number { get; set; }
     }
 }

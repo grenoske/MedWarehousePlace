@@ -1,17 +1,17 @@
-﻿using System;
+﻿using DAL.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Entities
+namespace BLL.DTO
 {
-    public class Shelf
+    public class ShelfDTO
     {
         public int Id { get; set; }
         public int Number { get; set; }
         public int RackId { get; set; }
-        public Rack Rack { get; set; }
-        public ICollection<Bin> Bins { get; set; }
+        public List<BinDTO> Bins { get; set; }
     }
 }

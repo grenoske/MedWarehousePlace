@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using BLL.DTO;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace PL.Models
 {
@@ -12,5 +13,31 @@ namespace PL.Models
         public CategoryViewModel Category { get; set; }
 
         public IEnumerable<SelectListItem> CategoryList { get; set; }
+
+        public static explicit operator ItemViewModel(ItemDTO itemDto)
+        {
+            return new ItemViewModel
+            {
+                Id = itemDto.Id,
+                Name = itemDto.Name,
+                Company = itemDto.Company,
+                Cost = itemDto.Cost,
+                CategoryId = itemDto.CategoryId,
+                Category = itemDto.Category != null ? (CategoryViewModel)itemDto.Category : null
+            };
+        }
+
+        public static explicit operator ItemDTO(ItemViewModel itemViewModel)
+        {
+            return new ItemDTO
+            {
+                Id = itemViewModel.Id,
+                Name = itemViewModel.Name,
+                Company = itemViewModel.Company,
+                Cost = itemViewModel.Cost,
+                CategoryId = itemViewModel.CategoryId,
+                //Category = itemViewModel.Category != null ? (CategoryDTO)itemViewModel.Category : null
+            };
+        }
     }
 }

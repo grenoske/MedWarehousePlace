@@ -2,22 +2,33 @@
 using PL.Models.Location;
 using PL.Models;
 using System.Diagnostics;
+using BLL.Services;
+using BLL.Interfaces;
+using BLL.DTO;
 
 namespace PL.Controllers
 {
     public class VisualController : Controller
     {
+        private readonly IWarehouseService _warehouseService;
+
+        public VisualController(IWarehouseService warehouseService)
+        {
+            _warehouseService = warehouseService;
+        }
         public IActionResult Index(int? wareHouseId = 1)
         {
-            Warehouse warehouse = GetWarehouse(wareHouseId);
+            WarehouseViewModel2 warehouse = GetWarehouse(wareHouseId);
             var viewModel = new VisualViewModel { Warehouse = warehouse };
             return View(viewModel);
         }
 
-        public IActionResult Edit(int? wareHouseId = 1)
+        public IActionResult Edit(int wareHouseId = 1)
         {
-            Warehouse warehouse = GetWarehouse(wareHouseId);
+            var warehouseDto = _warehouseService.GetWarehouseById(wareHouseId);
+            WarehouseViewModel2 warehouse = (WarehouseViewModel2)warehouseDto;
             var viewModel = new VisualViewModel { Warehouse = warehouse };
+            Debug.WriteLine("Cell Number: " + viewModel.Warehouse.Cells.Count);
             return View(viewModel);
         }
 
@@ -25,28 +36,30 @@ namespace PL.Controllers
         public IActionResult CreateRack(VisualViewModel viewModel)
         {
             var warehouse = viewModel.Warehouse;
+            Debug.WriteLine("Cells count when create rack: " + viewModel.Warehouse.Cells.Count);
             Debug.WriteLine("SaveRack");
             if (warehouse.Cells == null)
             {
                 Debug.WriteLine("Cell null");
             }
-            var occupiedCells = warehouse.Cells.Where(c => c.IsSelected).ToList();
+            var occupiedCells = warehouse.Cells.Where(c => c.IsSelected).Select(c => new CellDTO() { Id = c.Id }).ToList();
 
-            foreach (var cell in occupiedCells)
-            {
-                cell.IsRack = true;
-                cell.IsSelected = false;
-            }
+            /*            foreach (var cell in occupiedCells)
+                        {
+                            cell.IsRack = true;
+                            cell.IsSelected = false;
+                        }
 
-            foreach (var cell in warehouse.Cells)
-            {
-                if (occupiedCells.Contains(cell))
-                {
-                    cell.IsRack = true;
-                    cell.IsSelected = false;
-                }
-            }
-            warehouse.Racks = new List<Rack> { new Rack { Cells = occupiedCells } };
+                        foreach (var cell in warehouse.Cells)
+                        {
+                            if (occupiedCells.Contains(cell))
+                            {
+                                cell.IsRack = true;
+                                cell.IsSelected = false;
+                            }
+                        }
+                        warehouse.Racks = new List<Rack> { new Rack { Cells = occupiedCells } };*/
+            _warehouseService.CreateRack(new RackDTO { WarehouseId = warehouse.Id, Number = viewModel.Number, Cells = occupiedCells });
 
             return RedirectToAction("Edit", new { warehouseId = warehouse.Id });
         }
@@ -61,24 +74,23 @@ namespace PL.Controllers
                 Debug.WriteLine("Cell null");
             }
 
-            var occupiedCells = warehouse.Cells.Where(c => c.IsSelected).ToList();
-
-            warehouse.Aisles = new List<Aisle> { new Aisle { Id = 0, Number = 0, Cells = occupiedCells } };
-
+            var occupiedCells = warehouse.Cells.Where(c => c.IsSelected).Select(c => new CellDTO() { Id = c.Id}).ToList();
+            //warehouse.Aisles = new List<Aisle> { new Aisle { Id = 0, Number = 0, Cells = occupiedCells } };
+            _warehouseService.CreateAisle(new AisleDTO { WarehouseId = warehouse.Id, Number = viewModel.Number, Cells = occupiedCells });
             return RedirectToAction("Edit", new { warehouseId = warehouse.Id });
         }
 
         // Mock method to retrieve a warehouse (replace with actual data retrieval)
-        private Warehouse GetWarehouse(int? id)
+        private WarehouseViewModel2 GetWarehouse(int? id)
         {
             int length = 5;
             int width = 5;
             int height = 5;
-            List<Cell> cells = new List<Cell>();
+            List<CellViewModel> cells = new List<CellViewModel>();
 
             for (int i = 0; i < length * width; i++)
             {
-                cells.Add(new Cell { Id = i + 1 });
+                cells.Add(new CellViewModel { Id = i + 1 });
             }
 
             List<Aisle> aisles = new List<Aisle>()
@@ -107,13 +119,13 @@ namespace PL.Controllers
             cells[6].IsAisle = true;
             cells[11].IsAisle = true;
 
-            List<Item> items = new List<Item>
+/*            List<Item> items = new List<Item>
             {
                 new Item { Id = 1, Container="Europallet", Product="Antibiotics", Location="01-02-01-10", Quantity=122, ExpiryDate = new DateTime(2024, 12, 31)},
                 new Item { Id = 2, Container="Europallet", Product="Antibiotics", Location="01-02-01-11", Quantity=123, ExpiryDate = new DateTime(2024, 05, 06)},
                 new Item { Id = 3, Container="Europallet", Product="Antibiotics", Location="01-02-01-12", Quantity=144, ExpiryDate = new DateTime(2024, 01, 06)}
-            };
-            return new Warehouse { Id = 1, Name = "Warehouse 1", Location = "St. Ivana Franka 22a", Width = width, Height = height, Length = length, Cells = cells, Racks = racks, Aisles = aisles, Items = items };
+            };*/
+            return new WarehouseViewModel2 { Id = 1, Name = "Warehouse 1", Location = "St. Ivana Franka 22a", Width = width, Height = height, Length = length, Cells = cells, Racks = racks, Aisles = aisles};
         }
     }
 }

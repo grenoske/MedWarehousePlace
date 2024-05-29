@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Entities
+namespace BLL.DTO
 {
-    public class Warehouse
+    public class WarehouseDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -15,10 +15,9 @@ namespace DAL.Entities
         public int Length { get; set; }
         public int Height { get; set; }
         public int CellSize { get; set; }
-
-        public ICollection<Cell> Cells { get; set; }  
-        public ICollection<Aisle> Aisles { get; set; } 
-        public ICollection<Rack> Racks { get; set; }  
-        public ICollection<Item> Items { get; set; }  
+        public List<CellDTO> Cells { get; set; }
+        public List<AisleDTO> Aisles { get; set; }
+        public List<RackDTO> Racks { get; set; }
+        public List<ItemDTO> Items { get; set; }
     }
 }
