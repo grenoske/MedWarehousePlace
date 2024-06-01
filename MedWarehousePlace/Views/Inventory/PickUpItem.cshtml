@@ -1,46 +1,85 @@
 ﻿@model WorkerItemViewModel
 
-<h2>Pick Up Item</h2>
-<form asp-action="ConfirmPickUp" asp-controller="Inventory" method="post">
-    <input type="hidden" asp-for="Id" />
-    <input type="hidden" asp-for="InventoryItem.Item.Id" />
+<div class="card">
+    <div class="card-header">
+        <h2>Pick Up Item</h2>
+    </div>
+    <div class="card-body">
+        <form asp-action="ConfirmPickUp" asp-controller="Inventory" method="post">
+            <input type="hidden" asp-for="InventoryItem.Id" />
+            <input type="hidden" asp-for="InventoryItem.Item.Id" />
+            <input type="hidden" asp-for="InventoryItem.Status" />
+            <input type="hidden" asp-for="InventoryItem.ItemId" />
+            <input type="hidden" asp-for="RecommendBinId" />
 
-    <div class="form-group">
-        <label asp-for="InventoryItem.Item.Name">Item</label>
-        <input type="text" asp-for="InventoryItem.Item.Name" class="form-control" readonly />
+            <div class="form-group py-1">
+                <label asp-for="InventoryItem.Item.Name">Item</label>
+                <input type="text" asp-for="InventoryItem.Item.Name" class="form-control" readonly />
+            </div>
+            <div class="form-group py-1">
+                <label asp-for="InventoryItem.Quantity">Quantity</label>
+                <input type="number" asp-for="InventoryItem.Quantity" class="form-control" readonly />
+            </div>
+            <div class="form-group py-1">
+                <label asp-for="InventoryItem.ExpiryDate">ExpiryDate</label>
+                <input type="date" asp-for="InventoryItem.ExpiryDate" class="form-control" readonly />
+            </div>
+            <div class="form-group py-1">
+                <label asp-for="TotalWeight">Weight (kg) </label>
+                <input type="number" asp-for="TotalWeight" class="form-control" readonly />
+            </div>
+            <div class="form-group py-1">
+                <label asp-for="InventoryItem.Location">Location From</label>
+                <input type="text" asp-for="InventoryItem.Location" class="form-control" readonly />
+            </div>
+            <div class="form-group py-1">
+                <label asp-for="InventoryItem.Container" class="control-label"></label>
+                <input asp-for="InventoryItem.Container" class="form-control" />
+            </div>
+            <div class="py-2"></div>
+            <div class="card p-2">
+                <div class="card-header">
+                    Choose destination
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="LocationTo">Rack</label>
+                        <select asp-for="LocationTo" class="form-control" id="rackSelect">
+                            <option value="">Select Rack</option>
+                            @foreach (var rack in Model.Racks)
+                            {
+                                <option value="@rack.Value">@rack.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ShelfId">Shelf</label>
+                        <select asp-for="ShelfId" class="form-control" id="shelfSelect" disabled>
+                            <option value="">Select Shelf</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="BinId">Bin</label>
+                        <select asp-for="BinId" class="form-control" id="binSelect" disabled>
+                            <option value="">Select Bin</option>
+                        </select>
+                    </div>
+                    <div class="form-group py-2">
+                        <label for="btncheck1">System Quick Pick (Format: Rack-Shelf-Bin)</label>
+                        <div>
+                            <input type="checkbox" class="btn-check" id="btncheck1" asp-for="useRecommendation" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="btncheck1">Use Recommended Location: @Model.RecommendLocation</label>
+                        </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Confirm Pick Up</button>
+        </form>
+        
     </div>
-    <div class="form-group">
-        <label asp-for="InventoryItem.Quantity">Quantity</label>
-        <input type="number" asp-for="InventoryItem.Quantity" class="form-control" readonly />
-    </div>
-    <div class="form-group">
-        <label asp-for="InventoryItem.Location">Location From</label>
-        <input type="text" asp-for="InventoryItem.Location" class="form-control" readonly />
-    </div>
-    <div class="form-group">
-        <label asp-for="LocationTo">Rack</label>
-        <select asp-for="LocationTo" class="form-control" id="rackSelect">
-            <option value="">Select Rack</option>
-            @foreach (var rack in Model.Racks)
-            {
-                <option value="@rack.Value">@rack.Text</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label asp-for="ShelfId">Shelf</label>
-        <select asp-for="ShelfId" class="form-control" id="shelfSelect" disabled>
-            <option value="">Select Shelf</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label asp-for="BinId">Bin</label>
-        <select asp-for="BinId" class="form-control" id="binSelect" disabled>
-            <option value="">Select Bin</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Confirm Pick Up</button>
-</form>
+</div>
+
+
 
 @section Scripts {
     <script>

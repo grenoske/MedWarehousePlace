@@ -1,31 +1,74 @@
 ﻿@model InventoryListViewModel
 
-<h2>@Model.Title</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Item</th>
-            <th>Quantity</th>
-            <th>Expiry Date</th>
-            <th>Container</th>
-            <th>Location</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.InventoryItems)
-        {
-            <tr>
-                <td>@item.Item.Name</td>
-                <td>@item.Quantity</td>
-                <td>@item.ExpiryDate.ToShortDateString()</td>
-                <td>@item.Container</td>
-                <td>@item.Location</td>
-                <td>
-                    <a href="@Url.Action("PickUpItem", "Inventory", new { itemId = item.ItemId })" class="btn btn-primary">Pick Up</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-<a href="@Url.Action("AddItem", "Inventory", new { status = Model.Title })" class="btn btn-primary">Add @Model.Title Item</a>
+<div class="card text-center">
+    <div class="card-header">
+        <h2>@Model.Title Area</h2>
+    </div>
+    <div class="card-body">
+        <nav class="navbar navbar-light bg-light">
+            <div class="container-fluid">
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                </form>
+                <a href="@Url.Action("AddItem", "Inventory", new { status = Model.Title })" class="btn btn-primary">Add @Model.Title Item</a>
+            </div>
+        </nav>
+        <table class="table table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Expiry Date</th>
+                    <th>Container</th>
+                    <th>CurrentLocation</th>
+                    @if (Model.Title == "Transferring")
+                    {
+                        <th>Destination</th>
+                    }
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.InventoryItems)
+                {
+                    <tr>
+                        <td>@item.Item.Name</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.ExpiryDate.ToShortDateString()</td>
+                        <td>@item.Container</td>
+                        <td>@item.Location</td>
+                        @if (Model.Title == "Transferring")
+                        {
+                            <td>@item.LocationDest</td>
+                            <td>
+                                <form method="post" asp-action="PlaceItem" asp-route-itemId="@item.Id">
+                                    <button class="btn btn-primary" type="submit">Place</button>
+                                </form>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <a href="@Url.Action("PickUpItem", "Inventory", new { itemId = item.Id })" class="btn btn-primary">Pick Up</a>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination w-100 justify-content-center">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+        
+
+    </div>
+    <div class="card-footer text-muted">
+    </div>
+</div>

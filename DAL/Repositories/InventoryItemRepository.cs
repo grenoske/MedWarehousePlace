@@ -20,7 +20,30 @@ namespace DAL.Repositories
 
         public void Update(InventoryItem obj)
         {
-            _db.InventoryItems.Update(obj);
+            var objFromDb = _db.InventoryItems.FirstOrDefault(u => u.Id == obj.Id);
+            if (objFromDb != null)
+            {
+                objFromDb.Quantity = obj.Quantity;
+                objFromDb.ExpiryDate = obj.ExpiryDate;
+                objFromDb.Container = obj.Container;
+                objFromDb.Location = obj.Location;
+                objFromDb.LocationDest = obj.LocationDest;
+                objFromDb.Status = obj.Status;
+                objFromDb.BinId = obj.BinId;
+                objFromDb.ItemId = obj.ItemId;
+
+                if (obj.BinId != null)
+                {
+                    var binFromDb = _db.Bins.FirstOrDefault(b => b.Id == obj.BinId);
+                    if (binFromDb != null)
+                    {
+                        binFromDb.InventoryItemId = obj.Id;
+                        binFromDb.InventoryItem = objFromDb;
+                    }
+                }
+            }
+
+
         }
     }
 }

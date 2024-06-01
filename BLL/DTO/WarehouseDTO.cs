@@ -14,7 +14,7 @@ namespace BLL.DTO
         public int Width { get; set; }
         public int Length { get; set; }
         public int Height { get; set; }
-        public int CellSize { get; set; }
+        public int MaximumWeightOnUpperShelves { get; set; }
         public List<CellDTO> Cells { get; set; }
         public List<AisleDTO> Aisles { get; set; }
         public List<RackDTO> Racks { get; set; }

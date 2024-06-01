@@ -61,15 +61,80 @@ namespace BLL.Services
 
                 cell.Id = 0; 
             }
+            var wh = _unitOfWork.Warehouses.GetFirstOrDefault(w => w.Id == rack.WarehouseId);
+            var shelves = CreateShelves(wh.Height);
+            int numberOfBinsPerShelf = rack.Cells.Count();
+            var cellsList = rack.Cells.ToList();
+            
+            foreach (var shelf in shelves)
+            {
+                var bins = CreateBins(numberOfBinsPerShelf).ToList();
+                for (int i = 0; i < numberOfBinsPerShelf; i++)
+                {
+                    bins[i].Cell = cellsList[i];
+                }
+                shelf.Bins = bins;
+            }
+            rack.Shelves = shelves;
             _unitOfWork.Racks.Add(rack);
             _unitOfWork.Save();
         }
+
 
         public void UpdateWarehouse(WarehouseDTO warehouseDto)
         {
             var warehouse = _mapper.Map<Warehouse>(warehouseDto);
             _unitOfWork.Warehouses.Update(warehouse);
             _unitOfWork.Save();
+        }
+
+        private List<Shelf> CreateShelves(int number)
+        {
+            var shelves = new List<Shelf>();
+            for (int i = 0; i < number; i++)
+            {
+                shelves.Add(new Shelf() { Number = i + 1});
+            }
+
+            return shelves;
+        }
+
+        private List<Bin> CreateBins(int number)
+        {
+            var bins = new List<Bin>();
+            for (int i = 0; i < number; i++)
+            {
+                bins.Add(new Bin() { Number = i + 1 });
+            }
+
+            return bins;
+        }
+
+        public IEnumerable<RackDTO> GetRacks(int warehouseId = 1)
+        {
+            var racks = _unitOfWork.Racks.GetAll(wh => wh.WarehouseId == warehouseId);
+            return _mapper.Map<IEnumerable<RackDTO>>(racks);
+        }
+
+        public IEnumerable<ShelfDTO> GetShelves(int rackId)
+        {
+            var shelves = _unitOfWork.Shelves.GetAll(s => s.RackId == rackId);
+            return _mapper.Map<IEnumerable<ShelfDTO>>(shelves);
+        }
+
+        public IEnumerable<BinDTO> GetBins(int shelfId, bool empty = true)
+        {
+            IEnumerable<Bin> bins;
+
+            if (empty)
+            {
+                bins = _unitOfWork.Bins.GetAll(b => b.ShelfId == shelfId && b.InventoryItem == null);
+            }
+            else
+            {
+                bins = _unitOfWork.Bins.GetAll(b => b.ShelfId == shelfId);
+            }
+            return _mapper.Map<IEnumerable<BinDTO>>(bins);
         }
 
         private List<CellDTO> FillCells(Warehouse wh)

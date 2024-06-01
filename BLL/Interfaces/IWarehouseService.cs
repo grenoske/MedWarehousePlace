@@ -15,5 +15,9 @@ namespace BLL.Interfaces
         void CreateAisle(AisleDTO aisleDto);
         void CreateRack(RackDTO rackDto);
         void UpdateWarehouse(WarehouseDTO warehouseDto);
+
+        IEnumerable<RackDTO> GetRacks(int warehouseId = 1);
+        IEnumerable<ShelfDTO> GetShelves(int rackId);
+        IEnumerable<BinDTO> GetBins(int shelfId, bool empty = true);
     }
 }

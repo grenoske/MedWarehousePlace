@@ -15,6 +15,7 @@ namespace BLL.Infrastructure.MappingProfiles
         {
             CreateMap<Item, ItemDTO>().ReverseMap();
             CreateMap<Category, CategoryDTO>().ReverseMap();
+            CreateMap<InventoryItem, InventoryItemDTO>().ReverseMap();
         }
     }
 }

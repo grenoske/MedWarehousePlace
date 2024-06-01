@@ -8,7 +8,8 @@ namespace PL.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Company { get; set; } 
-        public double Cost { get; set; }  
+        public double Cost { get; set; }
+        public double Weight { get; set; }
         public int CategoryId { get; set; }
         public CategoryViewModel Category { get; set; }
 
@@ -23,6 +24,7 @@ namespace PL.Models
                 Company = itemDto.Company,
                 Cost = itemDto.Cost,
                 CategoryId = itemDto.CategoryId,
+                Weight = itemDto.Weight,
                 Category = itemDto.Category != null ? (CategoryViewModel)itemDto.Category : null
             };
         }
@@ -35,6 +37,7 @@ namespace PL.Models
                 Name = itemViewModel.Name,
                 Company = itemViewModel.Company,
                 Cost = itemViewModel.Cost,
+                Weight = itemViewModel.Weight,
                 CategoryId = itemViewModel.CategoryId,
                 //Category = itemViewModel.Category != null ? (CategoryDTO)itemViewModel.Category : null
             };

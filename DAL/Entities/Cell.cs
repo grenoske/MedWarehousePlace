@@ -15,5 +15,7 @@ namespace DAL.Entities
         public bool IsAisle { get; set; }
         public bool IsRack { get; set; }
         public bool IsNotEmpty { get; set; }
+
+        public ICollection<Bin> Bins { get; set; }
     }
 }

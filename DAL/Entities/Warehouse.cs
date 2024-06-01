@@ -14,7 +14,7 @@ namespace DAL.Entities
         public int Width { get; set; }
         public int Length { get; set; }
         public int Height { get; set; }
-        public int CellSize { get; set; }
+        public int MaximumWeightOnUpperShelves { get; set; }
 
         public ICollection<Cell> Cells { get; set; }  
         public ICollection<Aisle> Aisles { get; set; } 

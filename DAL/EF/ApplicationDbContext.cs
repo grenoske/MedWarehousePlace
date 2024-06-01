@@ -40,6 +40,12 @@ namespace DAL.EF
                 .HasForeignKey(ii => ii.ItemId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<InventoryItem>()
+                .HasOne(ii => ii.Bin)
+                .WithOne(b => b.InventoryItem)
+                .HasForeignKey<InventoryItem>(ii => ii.BinId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Item>()
                 .HasOne(i => i.Category)
                 .WithMany(c => c.Items)
@@ -64,17 +70,6 @@ namespace DAL.EF
                 .HasForeignKey(r => r.AisleId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            /*            modelBuilder.Entity<Cell>()
-                            .HasOne(c => c.Aisle)
-                            .WithMany(a => a.Cells)
-                            .HasForeignKey(c => c.AisleId)
-                            .OnDelete(DeleteBehavior.Restrict);
-
-                        modelBuilder.Entity<Cell>()
-                            .HasOne(c => c.Rack)
-                            .WithMany(r => r.Cells)
-                            .HasForeignKey(c => c.RackId)
-                            .OnDelete(DeleteBehavior.Restrict);*/
 
             modelBuilder.Entity<Shelf>()
                 .HasOne(s => s.Rack)
@@ -88,7 +83,17 @@ namespace DAL.EF
                 .HasForeignKey(b => b.ShelfId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Add more configurations if necessary
+            modelBuilder.Entity<Bin>()
+                .HasOne(b => b.InventoryItem)
+                .WithOne(ii => ii.Bin)
+                .HasForeignKey<Bin>(b => b.InventoryItemId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Bin>()
+                .HasOne(b => b.Cell)
+                .WithMany(c => c.Bins)
+                .HasForeignKey(b => b.CellId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

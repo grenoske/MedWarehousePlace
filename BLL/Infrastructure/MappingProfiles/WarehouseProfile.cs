@@ -12,8 +12,8 @@ namespace BLL.Infrastructure.MappingProfiles
             CreateMap<Cell, CellDTO>().ReverseMap();
             CreateMap<Aisle, AisleDTO>().ReverseMap();
             CreateMap<Rack, RackDTO>().ReverseMap();
-            CreateMap<Item, ItemDTO>().ReverseMap();
-            CreateMap<Category, CategoryDTO>().ReverseMap();
+            CreateMap<Shelf, ShelfDTO>().ReverseMap();
+            CreateMap<Bin, BinDTO>().ReverseMap();
         }
     }
 }

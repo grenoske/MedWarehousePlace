@@ -4,6 +4,7 @@ using DAL.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240530180514_locationDest")]
+    partial class locationDest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,9 +54,6 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CellId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("InventoryItemId")
                         .HasColumnType("int");
 
@@ -64,8 +64,6 @@ namespace DAL.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CellId");
 
                     b.HasIndex("InventoryItemId")
                         .IsUnique()
@@ -144,9 +142,6 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BinId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Container")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -200,14 +195,8 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TurnoverRate")
-                        .HasColumnType("int");
-
                     b.Property<int?>("WarehouseId")
                         .HasColumnType("int");
-
-                    b.Property<double>("Weight")
-                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -273,6 +262,9 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CellSize")
+                        .HasColumnType("int");
+
                     b.Property<int>("Height")
                         .HasColumnType("int");
 
@@ -282,9 +274,6 @@ namespace DAL.Migrations
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MaximumWeightOnUpperShelves")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -311,11 +300,6 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.Bin", b =>
                 {
-                    b.HasOne("DAL.Entities.Cell", "Cell")
-                        .WithMany("Bins")
-                        .HasForeignKey("CellId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("DAL.Entities.InventoryItem", "InventoryItem")
                         .WithOne("Bin")
                         .HasForeignKey("DAL.Entities.Bin", "InventoryItemId")
@@ -326,8 +310,6 @@ namespace DAL.Migrations
                         .HasForeignKey("ShelfId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Cell");
 
                     b.Navigation("InventoryItem");
 
@@ -414,11 +396,6 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Category", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("DAL.Entities.Cell", b =>
-                {
-                    b.Navigation("Bins");
                 });
 
             modelBuilder.Entity("DAL.Entities.InventoryItem", b =>
