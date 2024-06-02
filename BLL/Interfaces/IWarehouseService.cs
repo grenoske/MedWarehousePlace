@@ -11,6 +11,7 @@ namespace BLL.Interfaces
     {
         IEnumerable<WarehouseDTO> GetAllWarehouses();
         WarehouseDTO GetWarehouseById(int id);
+        WarehouseDTO GetWarehouseLevelById(int id, int level);
         void CreateWarehouse(WarehouseDTO warehouseDto);
         void CreateAisle(AisleDTO aisleDto);
         void CreateRack(RackDTO rackDto);

@@ -1,0 +1,33 @@
+﻿.cell-checkbox {
+    display: none;
+}
+
+.cell-label {
+    display: block;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+
+.cell-label.is-aisle {
+    background-color: #4cff00;
+}
+
+.cell-label.is-rack-empty {
+    background-color: #ffa5a5;
+}
+
+.cell-label.is-rack-not-empty {
+    background-color: #f00;
+}
+
+.cell-label.is-empty {
+    background-color: #fff;
+}
+
+.cell-label.is-selected {
+    background-color: #007bff;
+}

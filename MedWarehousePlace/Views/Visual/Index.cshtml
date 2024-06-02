@@ -1,19 +1,22 @@
 ﻿@model VisualViewModel
 
-<link rel="stylesheet" href="~/css/cell-color.css" />
+<link rel="stylesheet" href="~/css/test2.css" />
+
 <div class="card">
     <div class="card-header">
-        Visual Stock Locator
+        Visual Viewer
     </div>
     <div class="card-body">
+        <label>Cells count: @Model.Warehouse.Cells.Count</label>
+
         <div class="table-responsive">
-            <table class="table table-bordered table-sm border-secondary text-center">
+            <table class="table table-bordered table-hover">
                 <tbody>
                     <tr>
                         <th>Packing Area</th>
                         @for (int col = 0; col < Model.Warehouse.Width; col++)
                         {
-                            <th class="text-center">
+                            <th>
                             </th>
                         }
                         <th>Receiving Area</th>
@@ -26,25 +29,27 @@
                             @for (int col = 0; col < Model.Warehouse.Width; col++)
                             {
                                 int i = row * Model.Warehouse.Width + col;
-                                @if (Model.Warehouse.Cells[i].IsAisle)
-                                {
-                                    <td class="aisle">@Model.Warehouse.Cells[i].LabeledText</td>
-                                }
-                                else if (Model.Warehouse.Cells[i].IsRack)
-                                {
-                                    if (Model.Warehouse.Cells[i].IsNotEmpty)
+                                <td>
+                                    @if (Model.Warehouse.Cells[i].IsAisle)
                                     {
-                                        <td class="rack-filled">@Model.Warehouse.Cells[i].LabeledText</td>
+                                        <label class="cell-label is-aisle"></label>
+                                    }
+                                    else if (Model.Warehouse.Cells[i].IsRack)
+                                    {
+                                        if (Model.Warehouse.Cells[i].IsNotEmpty)
+                                        {
+                                            <label class="cell-label is-rack-not-empty" data-cell-id="@Model.Warehouse.Cells[i].InventoryItemId">@Model.Warehouse.Cells[i].LabeledText</label>
+                                        }
+                                        else
+                                        {
+                                            <label class="cell-label is-rack-empty">@Model.Warehouse.Cells[i].LabeledText</label>
+                                        }
                                     }
                                     else
                                     {
-                                        <td class="rack-empty">@Model.Warehouse.Cells[i].LabeledText</td>
+                                        <label class="cell-label is-empty"></label>
                                     }
-                                }
-                                else
-                                {
-                                    <td></td>
-                                }
+                                </td>
                             }
                             <td>
                             </td>
@@ -53,76 +58,76 @@
                 </tbody>
             </table>
         </div>
-        <div class="dropdown">
-            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                Shelf Level
-            </a>
-
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <li><a class="dropdown-item" href="#">Level 1</a></li>
-                <li><a class="dropdown-item" href="#">Level 2</a></li>
-                <li><a class="dropdown-item" href="#">Level 3</a></li>
-            </ul>
+        <form method="get" asp-action="Index">
+            <div class="dropdown py-2">
+                <label for="levelSelect">Shelf Level</label>
+                <select id="levelSelect" name="level" class="form-select">
+                    @for (int level = 1; level <= Model.Warehouse.Height; level++)
+                    {
+                        <option value="@level" selected="@(level == Model.CurrentLevel)">Level @(level)</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary mt-2">Load Level</button>
+            </div>
+        </form>
+        <div class="card">
+            <div class="card-header">
+                Key Notations
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <span class="cell-label is-aisle"></span>
+                    <span> - Aisle</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="cell-label is-rack-empty"></span>
+                    <span> - Empty Bin</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="cell-label is-rack-not-empty"></span>
+                    <span> - Not Empty Bin</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-<div class="card">
-    <div class="card-header">
-        Contents
-    </div>
-    <div class="card-body">
-        <nav class="navbar navbar-light bg-light">
-            <div class="container-fluid">
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-secondary" type="submit">Search</button>
-                </form>
+
+<!-- Modal for displaying item information -->
+<div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="itemModalLabel">Item Information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </nav>
-        <table class="table table-bordered table-sm">
-            <thead>
-                <tr>
-                    <th scope="col">Container</th>
-                    <th scope="col">Product</th>
-                    <th scope="col">Location</th>
-                    <th scope="col">Expiration Date</th>
-                    <th scope="col">Action</th>
-                </tr>
-            </thead>
-            @* <tbody>
-                @foreach (var item in Model.Warehouse.Items)
-                {
-                    <tr>
-                        <td>@item.Container</td>
-                        <td>@item.Product</td>
-                        <td>@item.Location</td>
-                        <td>@item.ExpiryDate</td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Process</a></li>
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody> *@
-        </table>
-        <nav aria-label="Page navigation example">
-            <ul class="pagination w-100 justify-content-center">
-                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-            </ul>
-        </nav>
-    </div>
-    <div class="card-footer text-muted">
+            <div class="modal-body">
+                <!-- Display item information here -->
+                <div id="itemInfo"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>
-
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.is-rack-not-empty').click(function () {
+                var id = $(this).attr('data-cell-id');
+                $.ajax({
+                    type: 'GET',
+                    url: '/Visual/GetItemById?id=' + id,
+                    success: function (data) {
+                        // Display item information in the modal
+                        $('#itemInfo').html(data);
+                        $('#itemModal').modal('show');
+                    },
+                    error: function () {
+                        alert('Error occurred while fetching item information.');
+                    }
+                });
+            });
+        });
+    </script>
+}

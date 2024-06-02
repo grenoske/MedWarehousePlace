@@ -32,6 +32,14 @@ namespace BLL.Services
             return warehouseDTO;
         }
 
+        public WarehouseDTO GetWarehouseLevelById(int id, int level)
+        {
+            var warehouse = _unitOfWork.Warehouses.GetFirstOrDefault(w => w.Id == id);
+            var warehouseDTO = _mapper.Map<WarehouseDTO>(warehouse);
+            warehouseDTO.Cells = FillCellsDetail(warehouse, level);
+            return warehouseDTO;
+        }
+
         public void CreateWarehouse(WarehouseDTO warehouseDto)
         {
             var warehouse = _mapper.Map<Warehouse>(warehouseDto);
@@ -170,6 +178,57 @@ namespace BLL.Services
                 cells.Add(cell);
             }
 
+            return cells;
+        }
+
+        private List<CellDTO> FillCellsDetail(Warehouse wh, int level)
+        {
+            var cells = new List<CellDTO>();
+            var aisles = _unitOfWork.Aisles.GetAll(w => w.WarehouseId == wh.Id, includeProperties: "Cells").ToList();
+            var racks = _unitOfWork.Racks.GetAll(w => w.WarehouseId == wh.Id, includeProperties: "Shelves.Bins.Cell,Cells").ToList();
+
+            foreach (var rack in racks)
+            {
+                rack.Shelves = rack.Shelves.Where(s => s.Number == level).ToList();
+            }
+            // Отримати всі Cells у яких Bins з речами
+            var Bins = racks.SelectMany(r => r.Shelves)
+                                     .SelectMany(s => s.Bins)
+                                     .ToList();
+            foreach (var rack in racks)
+            {
+                rack.Shelves = rack.Shelves.Where(s => s.Number == level).ToList();
+            }
+
+            for (int i = 0; i < wh.Width * wh.Length; i++)
+            {
+                var cell = new CellDTO { Id = i + 1 };
+
+                // Перевірка чи є ця комірка в Aisles
+                foreach (var aisle in aisles)
+                {
+                    if (aisle.Cells.Any(c => c.Number == cell.Id))
+                    {
+                        cell.IsAisle = true;
+                        break;
+                    }
+                }
+
+                // Перевірка чи є ця комірка в Racks
+                if(Bins.Any(c => c.Cell.Number == cell.Id))
+                {
+                    cell.IsRack = true;
+                    var Bin = Bins.FirstOrDefault(c => c.Cell.Number == cell.Id);
+                    cell.LabeledText = Bin.Number.ToString();
+                    if (Bin.InventoryItemId != null)
+                    {
+                        cell.IsNotEmpty = true;
+                        cell.InventoryItemId = Bin.InventoryItemId;
+                    }
+                }
+
+                cells.Add(cell);
+            }
             return cells;
         }
 

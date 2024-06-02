@@ -5,6 +5,7 @@ namespace PL.Models
     public class CellViewModel
     {
         public int Id { get; set; }
+        public int? InventoryItemId { get; set; }
         public string LabeledText { get; set; }
         public bool IsSelected { get; set; }
         public bool IsAisle { get; set; }
@@ -17,6 +18,7 @@ namespace PL.Models
             {
                 Id = cellDto.Id,
                 LabeledText = cellDto.LabeledText,
+                InventoryItemId = cellDto.InventoryItemId,
                 IsAisle = cellDto.IsAisle,
                 IsRack = cellDto.IsRack,
                 IsNotEmpty = cellDto.IsNotEmpty

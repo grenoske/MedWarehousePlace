@@ -37,3 +37,8 @@
     background-color: #4cff00;
     cursor: not-allowed;
 }
+
+.cell-label.is-selected {
+    background-color: #007bff;
+    cursor: not-allowed;
+}

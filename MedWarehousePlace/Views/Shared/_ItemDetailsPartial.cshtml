@@ -1,0 +1,24 @@
+﻿@model InventoryItemViewModel
+
+<div class="card">
+    <div class="card-header">
+        @Model.Item.Name
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-6">
+                <p><strong>Item ID:</strong> @Model.Id</p>
+                <p><strong>Item Name:</strong> @Model.Item.Name</p>
+                <p><strong>Weight:</strong> @(Model.Quantity * Model.Item.Weight) kg</p>
+                <p><strong>Quantity:</strong> @Model.Quantity</p>
+                <!-- Add more item properties as needed -->
+            </div>
+            <div class="col-sm-6">
+                <p><strong>Expiry Date:</strong> @Model.ExpiryDate.ToShortDateString()</p>
+                <p><strong>Container:</strong> @Model.Container</p>
+                <p><strong>Location:</strong> @Model.Location</p>
+                <p><strong>Status:</strong> @Model.Status</p>
+            </div>
+        </div>
+    </div>
+</div>
