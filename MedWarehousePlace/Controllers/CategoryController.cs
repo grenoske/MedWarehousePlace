@@ -1,11 +1,13 @@
 ﻿using BLL.DTO;
 using BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PL.Models;
 
 namespace PL.Controllers
 {
+    [Authorize]
     public class CategoryController : Controller
     {
         private readonly IInventoryService _inventoryService;

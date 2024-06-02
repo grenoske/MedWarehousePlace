@@ -16,6 +16,7 @@ namespace DAL.EF
         public DbSet<Rack> Racks { get; set; }
         public DbSet<Shelf> Shelves { get; set; }
         public DbSet<Bin> Bins { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public ApplicationDbContext()
         {
@@ -94,6 +95,18 @@ namespace DAL.EF
                 .WithMany(c => c.Bins)
                 .HasForeignKey(b => b.CellId)
                 .OnDelete(DeleteBehavior.Restrict);
+            /*
+                        modelBuilder.Entity<User>()
+                            .HasMany(u => u.Warehouses)
+                            .WithOne(w => w.User)
+                            .HasForeignKey(w => w.UserId)
+                            .OnDelete(DeleteBehavior.Restrict);*/
+
+            modelBuilder.Entity<User>()
+                .HasData(
+                    new User { Id = 1, Login = "admin", Password = "12345", Role = "admin" }
+                );
+
         }
     }
 }

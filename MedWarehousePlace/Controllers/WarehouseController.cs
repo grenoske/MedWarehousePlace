@@ -1,5 +1,6 @@
 ﻿using BLL.DTO;
 using BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using PL.Models;
@@ -8,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PL.Controllers
 {
+    [Authorize]
     public class WarehouseController : Controller
     {
         private readonly IWarehouseService _warehouseService;

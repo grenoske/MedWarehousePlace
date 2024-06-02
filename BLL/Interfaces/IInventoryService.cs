@@ -32,5 +32,7 @@ namespace BLL.Interfaces
         void PlaceInventoryItemToWarehouse(int id);
         public InventoryItemDTO RecommendItemPlacement(int itemId, int warehosueId);
 
+        void Dispose();
+
     }
 }

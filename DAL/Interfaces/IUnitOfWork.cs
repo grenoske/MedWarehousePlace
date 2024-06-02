@@ -19,6 +19,9 @@ namespace DAL.Interfaces
         IAisleRepository Aisles { get; }
         IShelfRepository Shelves { get; }
         IBinRepository Bins { get; }
+
+        // User
+        IUserRepository Users { get; }
         void Save();
     }
 }

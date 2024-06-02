@@ -24,91 +24,115 @@
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a asp-controller="Warehouse" asp-action="Dashboard" class="nav-link align-middle px-0 text-white link">
-                                <i class="fs-4 bi bi-clipboard"></i></i></i><span class="ms-1 d-none d-sm-inline">Dashboard</span>
-                            </a>
-                        </li>
 
-                        <li>
-                            <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-white">
-                                <i class="fs-4 bi bi-people"></i><span class="ms-1 d-none d-sm-inline">Employees</span>
-                            </a>
-                            <ul class="collapse show nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
-                                <li class="w-100">
-                                    <a asp-controller="Employee" asp-action="Index" class="nav-link px-0 text-white"> List all</a>
-                                </li>
-                                <li>
-                                    <a asp-controller="Employee" asp-action="Add" class="nav-link px-0 text-white"> Add employee </a>
-                                </li>
-                            </ul>
-                        </li>
+                        @if (User.IsInRole(SD.RoleAdmin))
+                        {
+                            <li>
+                                <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-white">
+                                    <i class="fs-4 bi bi-people"></i><span class="ms-1 d-none d-sm-inline">Employees</span>
+                                </a>
+                                <ul class="collapse show nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
+                                    <li class="w-100">
+                                        <a asp-controller="Employee" asp-action="Index" class="nav-link px-0 text-white"> List all</a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Employee" asp-action="Add" class="nav-link px-0 text-white"> Add employee </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
 
-                        <li>
-                            <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-white">
-                                <i class="fs-4 bi bi-building-gear"></i><span class="ms-1 d-none d-sm-inline">Warehouses</span>
-                            </a>
-                            <ul class="collapse show nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
-                                <li class="w-100">
-                                    <a asp-controller="Warehouse" asp-action="Index" class="nav-link px-0 text-white"> List all</a>
-                                </li>
-                                <li>
-                                    <a asp-controller="Department" asp-action="Add" class="nav-link px-0 text-white"> Add Department </a>
-                                </li>
-                            </ul>
-                        </li>
+                        @if (User.IsInRole(SD.RoleWorker) || User.IsInRole(SD.RoleAdmin))
+                        {
 
-                        <li>
-                            <a href="#submenu3" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-white">
-                                <i class="bi bi-box fs-4"></i><span class="ms-1 d-none d-sm-inline">Inventory</span>
-                            </a>
-                            <ul class="collapse show nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
-                                <li class="w-100">
-                                    <a asp-controller="Inventory" asp-action="Inventory" class="nav-link px-0 text-white"> Inventory </a>
-                                </li>
-                                <li>
-                                    <a asp-controller="Inventory" asp-action="Receiving" class="nav-link px-0 text-white"> Receiving </a>
-                                </li>
-                                <li>
-                                    <a asp-controller="Inventory" asp-action="Packing" class="nav-link px-0 text-white"> Packing </a>
-                                </li>
-                                <li>
-                                    <a asp-controller="Inventory" asp-action="Transferring" class="nav-link px-0 text-white"> Transferring </a>
-                                </li>
-                            </ul>
-                        </li>
+                            <li>
+                                <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-white">
+                                    <i class="fs-4 bi bi-building-gear"></i><span class="ms-1 d-none d-sm-inline">Warehouses</span>
+                                </a>
+                                <ul class="collapse show nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
+                                    <li class="w-100">
+                                        <a asp-controller="Warehouse" asp-action="Index" class="nav-link px-0 text-white"> List all</a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Warehouse" asp-action="Dashboard" class="nav-link px-0 text-white"> Dashboard </a>
+                                    </li>
+                                </ul>
+                            </li>
 
-                        <li>
-                            <a href="#submenu4" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-white">
-                                <i class="bi bi-map fs-4"></i><span class="ms-1 d-none d-sm-inline">Visual Stock Locator</span>
-                            </a>
-                            <ul class="collapse show nav flex-column ms-1" id="submenu4" data-bs-parent="#menu">
-                                <li class ="w-100">
-                                    <a asp-controller="Visual" asp-action="Index" class="nav-link px-0 text-white"> Show </a>
-                                </li>
-                                <li>
-                                    <a asp-controller="Visual" asp-action="Edit" class="nav-link px-0 text-white"> Edit </a>
-                                </li>
-                            </ul>
-                        </li>
+                            <li>
+                                <a href="#submenu3" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-white">
+                                    <i class="bi bi-box fs-4"></i><span class="ms-1 d-none d-sm-inline">Inventory</span>
+                                </a>
+                                <ul class="collapse show nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
+                                    <li class="w-100">
+                                        <a asp-controller="Inventory" asp-action="Inventory" class="nav-link px-0 text-white"> Inventory </a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Inventory" asp-action="Receiving" class="nav-link px-0 text-white"> Receiving </a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Inventory" asp-action="Packing" class="nav-link px-0 text-white"> Packing </a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Inventory" asp-action="Transferring" class="nav-link px-0 text-white"> Transferring </a>
+                                    </li>
+                                </ul>
+                            </li>
 
+                            <li>
+                                <a href="#submenu4" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-white">
+                                    <i class="bi bi-map fs-4"></i><span class="ms-1 d-none d-sm-inline">Visual Stock Locator</span>
+                                </a>
+                                <ul class="collapse show nav flex-column ms-1" id="submenu4" data-bs-parent="#menu">
+                                    <li class ="w-100">
+                                        <a asp-controller="Visual" asp-action="Index" class="nav-link px-0 text-white"> Show </a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Visual" asp-action="Edit" class="nav-link px-0 text-white"> Edit </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a href="#submenu5" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-white">
+                                    <i class="bi bi-box2 fs-4"></i><span class="ms-1 d-none d-sm-inline">Product</span>
+                                </a>
+                                <ul class="collapse show nav flex-column ms-1" id="submenu5" data-bs-parent="#menu">
+                                    <li class="w-100">
+                                        <a asp-controller="Item" asp-action="Index" class="nav-link px-0 text-white"> ProductList </a>
+                                    </li>
+                                    <li class="w-100">
+                                        <a asp-controller="Item" asp-action="Upsert" class="nav-link px-0 text-white"> AddProduct </a>
+                                    </li>
+                                    <li class="w-100">
+                                        <a asp-controller="Category" asp-action="Index" class="nav-link px-0 text-white"> CategoryList </a>
+                                    </li>
+                                    <li class="w-100">
+                                        <a asp-controller="Category" asp-action="Upsert" class="nav-link px-0 text-white"> AddCategory </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
                         <li>
-                            <a href="#submenu5" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-white">
-                                <i class="bi bi-box2 fs-4"></i><span class="ms-1 d-none d-sm-inline">Product</span>
+                            <a href="#submenu6" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-white">
+                                <i class="bi bi-box-arrow-right"></i><span class="ms-1 d-none d-sm-inline">Account</span>
                             </a>
-                            <ul class="collapse show nav flex-column ms-1" id="submenu5" data-bs-parent="#menu">
-                                <li class="w-100">
-                                    <a asp-controller="Item" asp-action="Index" class="nav-link px-0 text-white"> ProductList </a>
-                                </li>
-                                <li class="w-100">
-                                    <a asp-controller="Item" asp-action="Upsert" class="nav-link px-0 text-white"> AddProduct </a>
-                                </li>
-                                <li class="w-100">
-                                    <a asp-controller="Category" asp-action="Index" class="nav-link px-0 text-white"> CategoryList </a>
-                                </li>
-                                <li class="w-100">
-                                    <a asp-controller="Category" asp-action="Upsert" class="nav-link px-0 text-white"> AddCategory </a>
-                                </li>
+                            <ul class="collapse show nav flex-column ms-1" id="submenu6" data-bs-parent="#menu">
+                                @if(User.Identity.IsAuthenticated)
+                                {
+                                    <li class="w-100">
+                                        <a asp-controller="Account" asp-action="Logout" class="nav-link px-0 text-white"> Logout </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="w-100">
+                                        <a asp-controller="Account" asp-action="Login" class="nav-link px-0 text-white">Login </a>
+                                    </li>
+                                    <li class="w-100">
+                                        <a asp-controller="Account" asp-action="Register" class="nav-link px-0 text-white"> Register </a>
+                                    </li>
+                                }
                             </ul>
                         </li>
                     </ul>

@@ -2,6 +2,7 @@
 using BLL.Infrastructure.SD;
 using BLL.Interfaces;
 using BLL.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -12,6 +13,7 @@ using System.ComponentModel;
 
 namespace PL.Controllers
 {
+    [Authorize]
     public class InventoryController : Controller
     {
         private readonly IInventoryService _inventoryService;

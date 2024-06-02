@@ -5,9 +5,11 @@ using System.Diagnostics;
 using BLL.Services;
 using BLL.Interfaces;
 using BLL.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PL.Controllers
 {
+    [Authorize]
     public class VisualController : Controller
     {
         private readonly IWarehouseService _warehouseService;

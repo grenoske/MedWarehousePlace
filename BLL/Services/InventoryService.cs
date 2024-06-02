@@ -274,6 +274,9 @@ namespace BLL.Services
             throw new Exception("Unable to find the location for the recommended bin.");
         }
 
-
+        public void Dispose()
+        {
+            _unitOfWork.Dispose();
+        }
     }
 }

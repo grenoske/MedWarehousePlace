@@ -231,6 +231,10 @@ namespace BLL.Services
             }
             return cells;
         }
+        public void Dispose()
+        {
+            _unitOfWork.Dispose();
+        }
 
     }
 }

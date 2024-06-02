@@ -5,6 +5,7 @@ using DAL.Repositories;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using BLL.Infrastructure.MappingProfiles;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace MedWarehousePlace
 {
@@ -21,7 +22,12 @@ namespace MedWarehousePlace
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddTransient<IWarehouseService, WarehouseService>();
             builder.Services.AddTransient<IInventoryService, InventoryService>();
+            builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddAutoMapper(typeof(WarehouseProfile).Assembly);
+            builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
+            builder.Services.AddAutoMapper(typeof(ItemProfile).Assembly);
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(x => x.LoginPath = "/account/login");
 
             var app = builder.Build();
 
@@ -38,6 +44,7 @@ namespace MedWarehousePlace
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

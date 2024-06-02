@@ -20,6 +20,9 @@ namespace BLL.Infrastructure.SD
         public const string LocationTransferring = "Transferring";
         public const string LocationInventory = "InventoryArea";
 
+        public const string RoleWorker = "worker";
+        public const string RoleAdmin = "admin";
+
         public const int HighTurnOverRatePerDay = 10;
     }
 }

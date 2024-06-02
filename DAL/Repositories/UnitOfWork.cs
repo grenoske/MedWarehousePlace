@@ -23,6 +23,9 @@ namespace DAL.Repositories
         public IShelfRepository Shelves { get; private set; }
         public IBinRepository Bins { get; private set; }
 
+        // User
+        public IUserRepository Users { get; private set; }
+
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
@@ -35,6 +38,8 @@ namespace DAL.Repositories
             Aisles = new AisleRepository(_db);
             Shelves = new ShelfRepository(_db);
             Bins = new BinRepository(_db);
+
+            Users = new UserRepository(_db);
         }
 
         public void Save()
