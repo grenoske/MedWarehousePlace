@@ -104,25 +104,10 @@ namespace DAL.Migrations
                     b.Property<int?>("AisleId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsAisle")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsNotEmpty")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRack")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSelected")
-                        .HasColumnType("bit");
-
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
                     b.Property<int?>("RackId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("WarehouseId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -130,8 +115,6 @@ namespace DAL.Migrations
                     b.HasIndex("AisleId");
 
                     b.HasIndex("RackId");
-
-                    b.HasIndex("WarehouseId");
 
                     b.ToTable("Cells");
                 });
@@ -382,10 +365,6 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.Rack", null)
                         .WithMany("Cells")
                         .HasForeignKey("RackId");
-
-                    b.HasOne("DAL.Entities.Warehouse", null)
-                        .WithMany("Cells")
-                        .HasForeignKey("WarehouseId");
                 });
 
             modelBuilder.Entity("DAL.Entities.InventoryItem", b =>
@@ -404,7 +383,7 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.Category", "Category")
                         .WithMany("Items")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DAL.Entities.Warehouse", null)
@@ -495,8 +474,6 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Warehouse", b =>
                 {
                     b.Navigation("Aisles");
-
-                    b.Navigation("Cells");
 
                     b.Navigation("Items");
 

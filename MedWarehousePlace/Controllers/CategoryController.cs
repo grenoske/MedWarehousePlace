@@ -2,7 +2,6 @@
 using BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using PL.Models;
 
 namespace PL.Controllers
@@ -79,67 +78,11 @@ namespace PL.Controllers
             return RedirectToAction("Index");
         }
 
-
-
-        // Fake BLL
-        public IEnumerable<CategoryViewModel> GetCategories(int page)
+        protected override void Dispose(bool disposing)
         {
-            List<CategoryViewModel> items = new List<CategoryViewModel>();
-            if (page == 1)
-            {
-                items = new List<CategoryViewModel>()
-                {
-                    new CategoryViewModel { Id = 1, Name = "Medical Supplies" },
-                    new CategoryViewModel { Id = 2, Name = "Personal Protective Equipment" },
-                    new CategoryViewModel { Id = 3, Name = "Diagnostic Equipment"}
-                };
-            }
-            else if (page == 2)
-            {
-                items = new List<CategoryViewModel>()
-                {
-                    new CategoryViewModel {Id = 3, Name = "Diagnostic Equipment"},
-                    new CategoryViewModel { Id = 4, Name = "Mobility Aids"}
-                };
-            }
-
-            return items;
+            _inventoryService.Dispose();
+            base.Dispose(disposing);
         }
 
-/*        private IEnumerable<CategoryViewModel> GetCategories()
-        {
-
-
-            var categories = new List<CategoryViewModel>
-            {
-                new CategoryViewModel { Id = 1, Name = "Medical Supplies" },
-                new CategoryViewModel { Id = 2, Name = "Personal Protective Equipment" },
-                new CategoryViewModel { Id = 3, Name = "Diagnostic Equipment" },
-                new CategoryViewModel { Id = 4, Name = "Mobility Aids" }
-            };
-
-            return categories;
-        }*/
-
-        public CategoryViewModel GetCategory(int? id)
-        {
-            return new CategoryViewModel { Id = 1, Name = "Medical Supplies"};
-        }
-
-        public void UpdateCategory(CategoryViewModel obj)
-        {
-            System.Diagnostics.Debug.WriteLine("Updating Category with id: " + obj.Id);
-            return;
-        }
-        public void AddCategory(CategoryViewModel obj)
-        {
-            System.Diagnostics.Debug.WriteLine("Adding Category with name: " + obj.Name);
-            return;
-        }
-        public void RemoveCategory(CategoryViewModel obj)
-        {
-            System.Diagnostics.Debug.WriteLine("Removing Category with id: " + obj.Id);
-            return;
-        }
     }
 }

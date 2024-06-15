@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240527172943_cell2")]
-    partial class cell2
+    [Migration("20240608193722_deletekeycells")]
+    partial class deletekeycells
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,6 +54,12 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CellId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("InventoryItemId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
@@ -61,6 +67,12 @@ namespace DAL.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CellId");
+
+                    b.HasIndex("InventoryItemId")
+                        .IsUnique()
+                        .HasFilter("[InventoryItemId] IS NOT NULL");
 
                     b.HasIndex("ShelfId");
 
@@ -95,25 +107,10 @@ namespace DAL.Migrations
                     b.Property<int?>("AisleId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsAisle")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsNotEmpty")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRack")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSelected")
-                        .HasColumnType("bit");
-
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
                     b.Property<int?>("RackId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("WarehouseId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -121,8 +118,6 @@ namespace DAL.Migrations
                     b.HasIndex("AisleId");
 
                     b.HasIndex("RackId");
-
-                    b.HasIndex("WarehouseId");
 
                     b.ToTable("Cells");
                 });
@@ -134,6 +129,9 @@ namespace DAL.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BinId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Container")
                         .IsRequired()
@@ -147,6 +145,9 @@ namespace DAL.Migrations
 
                     b.Property<string>("Location")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LocationDest")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")
@@ -185,8 +186,14 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TurnoverRate")
+                        .HasColumnType("int");
+
                     b.Property<int?>("WarehouseId")
                         .HasColumnType("int");
+
+                    b.Property<double>("Weight")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -244,7 +251,7 @@ namespace DAL.Migrations
                     b.ToTable("Shelves");
                 });
 
-            modelBuilder.Entity("DAL.Entities.Warehouse", b =>
+            modelBuilder.Entity("DAL.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -252,8 +259,39 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CellSize")
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Login = "admin",
+                            Password = "12345",
+                            Role = "admin"
+                        });
+                });
+
+            modelBuilder.Entity("DAL.Entities.Warehouse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Height")
                         .HasColumnType("int");
@@ -265,14 +303,22 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("MaximumWeightOnUpperShelves")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Width")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Warehouses");
                 });
@@ -290,11 +336,25 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.Bin", b =>
                 {
+                    b.HasOne("DAL.Entities.Cell", "Cell")
+                        .WithMany("Bins")
+                        .HasForeignKey("CellId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("DAL.Entities.InventoryItem", "InventoryItem")
+                        .WithOne("Bin")
+                        .HasForeignKey("DAL.Entities.Bin", "InventoryItemId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("DAL.Entities.Shelf", "Shelf")
                         .WithMany("Bins")
                         .HasForeignKey("ShelfId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Cell");
+
+                    b.Navigation("InventoryItem");
 
                     b.Navigation("Shelf");
                 });
@@ -308,10 +368,6 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.Rack", null)
                         .WithMany("Cells")
                         .HasForeignKey("RackId");
-
-                    b.HasOne("DAL.Entities.Warehouse", null)
-                        .WithMany("Cells")
-                        .HasForeignKey("WarehouseId");
                 });
 
             modelBuilder.Entity("DAL.Entities.InventoryItem", b =>
@@ -330,7 +386,7 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.Category", "Category")
                         .WithMany("Items")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DAL.Entities.Warehouse", null)
@@ -369,6 +425,15 @@ namespace DAL.Migrations
                     b.Navigation("Rack");
                 });
 
+            modelBuilder.Entity("DAL.Entities.Warehouse", b =>
+                {
+                    b.HasOne("DAL.Entities.User", "User")
+                        .WithMany("Warehouses")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DAL.Entities.Aisle", b =>
                 {
                     b.Navigation("Cells");
@@ -379,6 +444,17 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Category", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Cell", b =>
+                {
+                    b.Navigation("Bins");
+                });
+
+            modelBuilder.Entity("DAL.Entities.InventoryItem", b =>
+                {
+                    b.Navigation("Bin")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DAL.Entities.Rack", b =>
@@ -393,11 +469,14 @@ namespace DAL.Migrations
                     b.Navigation("Bins");
                 });
 
+            modelBuilder.Entity("DAL.Entities.User", b =>
+                {
+                    b.Navigation("Warehouses");
+                });
+
             modelBuilder.Entity("DAL.Entities.Warehouse", b =>
                 {
                     b.Navigation("Aisles");
-
-                    b.Navigation("Cells");
 
                     b.Navigation("Items");
 

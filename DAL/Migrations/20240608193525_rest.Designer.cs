@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240602164619_user2")]
-    partial class user2
+    [Migration("20240608193525_rest")]
+    partial class rest
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -106,18 +106,6 @@ namespace DAL.Migrations
 
                     b.Property<int?>("AisleId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsAisle")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsNotEmpty")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRack")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSelected")
-                        .HasColumnType("bit");
 
                     b.Property<int>("Number")
                         .HasColumnType("int");
@@ -407,7 +395,7 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.Category", "Category")
                         .WithMany("Items")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DAL.Entities.Warehouse", null)

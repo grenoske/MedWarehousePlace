@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PL.Models.Location;
 using PL.Models;
 using System.Diagnostics;
-using BLL.Services;
 using BLL.Interfaces;
 using BLL.DTO;
 using Microsoft.AspNetCore.Authorization;
@@ -66,6 +64,13 @@ namespace PL.Controllers
             //warehouse.Aisles = new List<Aisle> { new Aisle { Id = 0, Number = 0, Cells = occupiedCells } };
             _warehouseService.CreateAisle(new AisleDTO { WarehouseId = warehouse.Id, Number = viewModel.Number, Cells = occupiedCells });
             return RedirectToAction("Edit", new { warehouseId = warehouse.Id });
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _inventoryService.Dispose();
+            _warehouseService.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

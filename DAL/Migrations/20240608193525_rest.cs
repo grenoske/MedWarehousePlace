@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class first : Migration
+    public partial class rest : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,6 +24,21 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Login = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Warehouses",
                 columns: table => new
                 {
@@ -35,11 +49,17 @@ namespace DAL.Migrations
                     Width = table.Column<int>(type: "int", nullable: false),
                     Length = table.Column<int>(type: "int", nullable: false),
                     Height = table.Column<int>(type: "int", nullable: false),
-                    CellSize = table.Column<int>(type: "int", nullable: false)
+                    MaximumWeightOnUpperShelves = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Warehouses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Warehouses_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -70,7 +90,9 @@ namespace DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Company = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TurnoverRate = table.Column<int>(type: "int", nullable: false),
                     Cost = table.Column<double>(type: "float", nullable: false),
+                    Weight = table.Column<double>(type: "float", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     WarehouseId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -82,7 +104,7 @@ namespace DAL.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Items_Warehouses_WarehouseId",
                         column: x => x.WarehouseId,
@@ -98,7 +120,7 @@ namespace DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Number = table.Column<int>(type: "int", nullable: false),
                     WarehouseId = table.Column<int>(type: "int", nullable: false),
-                    AisleId = table.Column<int>(type: "int", nullable: false)
+                    AisleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -108,7 +130,7 @@ namespace DAL.Migrations
                         column: x => x.AisleId,
                         principalTable: "Aisles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Racks_Warehouses_WarehouseId",
                         column: x => x.WarehouseId,
@@ -128,7 +150,9 @@ namespace DAL.Migrations
                     ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Container = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    LocationDest = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BinId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -147,11 +171,7 @@ namespace DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LabeledText = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsSelected = table.Column<bool>(type: "bit", nullable: false),
-                    IsAisle = table.Column<bool>(type: "bit", nullable: false),
-                    IsRack = table.Column<bool>(type: "bit", nullable: false),
-                    IsNotEmpty = table.Column<bool>(type: "bit", nullable: false),
+                    Number = table.Column<int>(type: "int", nullable: false),
                     AisleId = table.Column<int>(type: "int", nullable: true),
                     RackId = table.Column<int>(type: "int", nullable: true),
                     WarehouseId = table.Column<int>(type: "int", nullable: true)
@@ -203,11 +223,25 @@ namespace DAL.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Number = table.Column<int>(type: "int", nullable: false),
-                    ShelfId = table.Column<int>(type: "int", nullable: false)
+                    ShelfId = table.Column<int>(type: "int", nullable: false),
+                    CellId = table.Column<int>(type: "int", nullable: true),
+                    InventoryItemId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Bins", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Bins_Cells_CellId",
+                        column: x => x.CellId,
+                        principalTable: "Cells",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Bins_InventoryItems_InventoryItemId",
+                        column: x => x.InventoryItemId,
+                        principalTable: "InventoryItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Bins_Shelves_ShelfId",
                         column: x => x.ShelfId,
@@ -216,10 +250,27 @@ namespace DAL.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Login", "Password", "Role" },
+                values: new object[] { 1, "admin", "12345", "admin" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Aisles_WarehouseId",
                 table: "Aisles",
                 column: "WarehouseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bins_CellId",
+                table: "Bins",
+                column: "CellId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bins_InventoryItemId",
+                table: "Bins",
+                column: "InventoryItemId",
+                unique: true,
+                filter: "[InventoryItemId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bins_ShelfId",
@@ -270,6 +321,11 @@ namespace DAL.Migrations
                 name: "IX_Shelves_RackId",
                 table: "Shelves",
                 column: "RackId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Warehouses_UserId",
+                table: "Warehouses",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -301,6 +357,9 @@ namespace DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Warehouses");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

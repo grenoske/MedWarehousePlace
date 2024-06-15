@@ -2,17 +2,9 @@
 using BLL.DTO;
 using BLL.Infrastructure.AdditionalFunction;
 using BLL.Infrastructure.SD;
-using BLL.Infrastructure;
 using BLL.Interfaces;
 using DAL.Entities;
 using DAL.Interfaces;
-using DAL.Migrations;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Services
 {
@@ -35,12 +27,16 @@ namespace BLL.Services
 
         public ItemDTO GetItemById(int id)
         {
+            if (id <= 0) throw new ArgumentOutOfRangeException(nameof(id), "ID must be greater than zero.");
             var item = _unitOfWork.Items.GetFirstOrDefault(i => i.Id == id, includeProperties: "Category");
+            if (item == null) throw new KeyNotFoundException("Item not found.");
             return _mapper.Map<ItemDTO>(item);
         }
 
         public void CreateItem(ItemDTO itemDto)
         {
+            if (itemDto == null) throw new ArgumentNullException(nameof(itemDto));
+
             var item = _mapper.Map<Item>(itemDto);
             _unitOfWork.Items.Add(item);
             _unitOfWork.Save();
@@ -48,19 +44,24 @@ namespace BLL.Services
 
         public void UpdateItem(ItemDTO itemDto)
         {
+            if (itemDto == null) throw new ArgumentNullException(nameof(itemDto));
+
             var item = _mapper.Map<Item>(itemDto);
+            if (_unitOfWork.Items.GetFirstOrDefault(i => i.Id == item.Id) == null)
+                throw new KeyNotFoundException("Item not found.");
             _unitOfWork.Items.Update(item);
             _unitOfWork.Save();
         }
 
         public void DeleteItem(int id)
         {
+            if (id <= 0) throw new ArgumentOutOfRangeException(nameof(id), "ID must be greater than zero.");
+
             var item = _unitOfWork.Items.GetFirstOrDefault(i => i.Id == id);
-            if (item != null)
-            {
-                _unitOfWork.Items.Remove(item);
-                _unitOfWork.Save();
-            }
+            if (item == null) throw new KeyNotFoundException("Item not found.");
+
+            _unitOfWork.Items.Remove(item);
+            _unitOfWork.Save();
         }
 
         // Category methods
@@ -173,7 +174,7 @@ namespace BLL.Services
             var inventoryItem = _unitOfWork.InventoryItems.GetFirstOrDefault(ii => ii.Id == itemId, includeProperties: "Item");
             if (inventoryItem == null)
             {
-                throw new ValidationException($"Item with ID {itemId} not found.", "");
+                throw new Exception($"Item with ID {itemId} not found.");
             }
 
             var warehouse = _unitOfWork.Warehouses.GetFirstOrDefault(w => w.Id == warehouseId);
@@ -232,10 +233,10 @@ namespace BLL.Services
                 recommendBin = sortedBins.LastOrDefault();
             }
 
-            if (recommendBin == null)
+/*            if (recommendBin == null)
             {
                 throw new Exception("No suitable bin found based on the given conditions.");
-            }
+            }*/
 
             // Використати метод FindLocation для отримання розташування
             string locationDest = FindBinLocation(racks, recommendBin);

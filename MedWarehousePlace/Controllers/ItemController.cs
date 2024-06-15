@@ -1,8 +1,6 @@
 ﻿using BLL.DTO;
 using BLL.Interfaces;
-using DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PL.Models;
@@ -83,6 +81,11 @@ namespace PL.Controllers
             return RedirectToAction("Index");
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            _inventoryService.Dispose();
+            base.Dispose(disposing);
+        }
 
 
         // Fake BLL

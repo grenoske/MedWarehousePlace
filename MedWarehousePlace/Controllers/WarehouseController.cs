@@ -1,7 +1,6 @@
 ﻿using BLL.DTO;
 using BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using PL.Models;
 using PL.Models.Location;
@@ -82,7 +81,11 @@ namespace PL.Controllers
             return View();
         }
 
-
+        protected override void Dispose(bool disposing)
+        {
+            _warehouseService.Dispose();
+            base.Dispose(disposing);
+        }
 
 
 

@@ -1,5 +1,4 @@
 ﻿using BLL.DTO;
-using PL.Models.Location;
 
 namespace PL.Models
 {

@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using DAL.Entities;
 
 namespace DAL.EF
@@ -26,10 +24,12 @@ namespace DAL.EF
         {
             // Database configuration code
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\Local;Database=GreeMed");
+            if (!builder.IsConfigured)
+            {
+                builder.UseSqlServer(@"Server=(localdb)\Local;Database=GreeMed");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -51,7 +51,7 @@ namespace DAL.EF
                 .HasOne(i => i.Category)
                 .WithMany(c => c.Items)
                 .HasForeignKey(i => i.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Aisle>()
                 .HasOne(a => a.Warehouse)
@@ -95,12 +95,6 @@ namespace DAL.EF
                 .WithMany(c => c.Bins)
                 .HasForeignKey(b => b.CellId)
                 .OnDelete(DeleteBehavior.Restrict);
-            /*
-                        modelBuilder.Entity<User>()
-                            .HasMany(u => u.Warehouses)
-                            .WithOne(w => w.User)
-                            .HasForeignKey(w => w.UserId)
-                            .OnDelete(DeleteBehavior.Restrict);*/
 
             modelBuilder.Entity<User>()
                 .HasData(

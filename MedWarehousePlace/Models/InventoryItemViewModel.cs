@@ -1,5 +1,4 @@
 ﻿using BLL.DTO;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace PL.Models
